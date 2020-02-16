@@ -1,5 +1,5 @@
 //
-//  ViewController.swift
+//  NewNoteViewController.swift
 //  Notepad
 //
 //  Created by gunhyeong on 2020/02/16.
@@ -8,13 +8,11 @@
 
 import UIKit
 
-class ViewController: UIViewController {
+class NewNoteViewController: UIViewController {
 
     override func viewDidLoad() {
-        super.viewDidLoad()
         // Do any additional setup after loading the view.
     }
 
 
 }
-
