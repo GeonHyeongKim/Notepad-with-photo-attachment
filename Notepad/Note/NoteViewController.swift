@@ -20,12 +20,21 @@ class NoteViewController: UIViewController {
         self.navigationController?.navigationBar.tintColor = .yellow
     }
     
+    override func prepare(for segue: UIStoryboardSegue, sender: Any?) { // 임시
+        if(segue.identifier == "showPhotoLibrary"){
+            let PhotoLibraryViewController = segue.destination as? PhotoLibraryViewController
+        }
+    }
+    
     
     @IBAction func openPhotoLibrary(_ sender: Any){
         let optionMenuAlert = UIAlertController(title: nil, message: nil, preferredStyle: .actionSheet)
+        
         //옵션 초기화
         let photoLibraryAction = UIAlertAction(title: "사진 보관함", style: .default, handler: {
             (alert: UIAlertAction!) -> Void in
+            self.performSegue(withIdentifier: "showPhotoLibrary", sender: nil)
+
         })
         let newPhotoAction = UIAlertAction(title: "새로 촬영", style: .default, handler: {
             (alert: UIAlertAction!) -> Void in
