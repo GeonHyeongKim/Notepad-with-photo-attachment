@@ -13,8 +13,7 @@ class PhotoLibraryViewController: UIViewController {
     @IBOutlet weak var cvPhotoLibrary: UICollectionView!
     @IBOutlet weak var activityIndicator: UIActivityIndicatorView!
     
-    var libraryPhotos = [UIImage]()
-//    var allPhotos: PHFetchResult<PHAsset>?
+    var photos = [UIImage]()
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -42,7 +41,7 @@ class PhotoLibraryViewController: UIViewController {
             case .authorized:
                 self.getLibraryData()
             case .denied, .restricted:
-                let myAlert = UIAlertController(title: "Photo Library Access Denied", message: "Photo Asset Loader needs access to your photo library. Without it you will not be able to access any of your images. Please go into your app privacy settings and allow access.", preferredStyle: .alert)
+                let myAlert = UIAlertController(title: "사진 보관함에 접근 불가", message: "사진 보관함에 접근할 수 있도록 허용해 주세요.", preferredStyle: .alert)
                 let okAction = UIAlertAction(title: "OK", style: .default, handler: nil)
                 myAlert.addAction(okAction)
                 self.present(myAlert, animated:true, completion:nil)
@@ -76,7 +75,7 @@ class PhotoLibraryViewController: UIViewController {
                 
                 PHImageManager.default().requestImage(for: asset, targetSize: CGSize(width: 200, height: 200), contentMode: .aspectFill, options: self.imageOption()) { (image, _) in
                     if(image != nil){
-                        self.libraryPhotos.append(image!)
+                        self.photos.append(image!)
                     }
                     dispatchGroup.leave()
                 }
@@ -103,19 +102,12 @@ class PhotoLibraryViewController: UIViewController {
 extension PhotoLibraryViewController: UICollectionViewDataSource {
     
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
-        return libraryPhotos.count
+        return photos.count
     }
     
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
         let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "PhotoLibraryCollectionViewCell", for: indexPath) as! PhotoLibraryCollectionViewCell
-        cell.ivThumb.image = self.libraryPhotos[indexPath.item]
-        
-        
-        
-        //        cell.ivThumb.image = libraryPhotos[indexPath.row]
-        //        let minute = Int(floor(asset.duration)) / 60
-        //        let second = Int(floor(asset.duration)) % 60
-        //        cell.lblTime.text = String.init(format: "%02d:%02d", minute, second)
+        cell.ivThumb.image = self.photos[indexPath.item]
         
         return cell
     }

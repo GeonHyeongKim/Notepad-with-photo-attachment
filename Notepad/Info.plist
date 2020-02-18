@@ -54,9 +54,9 @@
 		<string>UIInterfaceOrientationLandscapeRight</string>
 	</array>
 	<key>NSCameraUsageDescription</key>
-	<string>카메라 사용을 허가해주세요</string>
-	<key>NSPhotoLibraryAddUsageDescription</key>
-	<string>앨범 사용을 허가해주세요</string>
+	<string>카메라 사용을 위해 &apos;확인&apos;을 눌러주세요</string>
+	<key>NSPhotoLibraryUsageDescription</key>
+	<string>엘범 사용을 위해 &apos;확인&apos;을 눌러주세요</string>
 	<key>LSApplicationCategoryType</key>
 	<string></string>
 	<key>UISupportedInterfaceOrientations~ipad</key>
