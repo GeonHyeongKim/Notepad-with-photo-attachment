@@ -65,7 +65,7 @@
                                             <color key="textColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                             <nil key="highlightedColor"/>
                                         </label>
-                                        <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" ambiguous="YES" text="Date" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="I9V-8C-gWa" userLabel="lbl Note Date">
+                                        <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Date" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="I9V-8C-gWa" userLabel="lbl Note Date">
                                             <rect key="frame" x="47" y="47" width="23.5" height="13"/>
                                             <fontDescription key="fontDescription" name="Roboto-Light" family="Roboto" pointSize="11"/>
                                             <color key="textColor" red="0.6588235294117647" green="0.6588235294117647" blue="0.6588235294117647" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
@@ -85,6 +85,7 @@
                                             <nil key="highlightedColor"/>
                                         </label>
                                     </subviews>
+                                    <color key="backgroundColor" white="0.0" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                     <constraints>
                                         <constraint firstAttribute="trailing" relation="greaterThanOrEqual" secondItem="TFu-cj-fg3" secondAttribute="trailing" constant="20" symbolic="YES" id="1YB-Dn-uPI"/>
                                         <constraint firstItem="obN-Uw-AoP" firstAttribute="centerY" secondItem="lsp-MD-N9B" secondAttribute="centerY" id="382-du-Tit"/>
@@ -99,6 +100,7 @@
                                         <constraint firstItem="CJX-UY-0ef" firstAttribute="leading" secondItem="lsp-MD-N9B" secondAttribute="leading" id="aWA-Tg-4Tr"/>
                                         <constraint firstItem="TFu-cj-fg3" firstAttribute="top" secondItem="lsp-MD-N9B" secondAttribute="top" constant="15" id="nDY-Qj-9y6"/>
                                         <constraint firstItem="CJX-UY-0ef" firstAttribute="width" secondItem="lsp-MD-N9B" secondAttribute="width" id="ntQ-gL-TK1"/>
+                                        <constraint firstItem="I9V-8C-gWa" firstAttribute="top" secondItem="c2r-g0-5nC" secondAttribute="bottom" constant="-2" id="oip-cJ-V7Q"/>
                                         <constraint firstItem="c2r-g0-5nC" firstAttribute="leading" secondItem="obN-Uw-AoP" secondAttribute="trailing" constant="10" id="w2b-hs-pfh"/>
                                     </constraints>
                                 </tableViewCellContentView>
@@ -107,7 +109,7 @@
                                     <outlet property="lblContents" destination="c2r-g0-5nC" id="e0l-Ft-CAE"/>
                                     <outlet property="lblLastModifiedDate" destination="I9V-8C-gWa" id="6bK-HD-Omt"/>
                                     <outlet property="lblTitle" destination="TFu-cj-fg3" id="96t-a1-Yul"/>
-                                    <segue destination="HoM-Sn-XN5" kind="show" id="XOq-MN-WfT"/>
+                                    <segue destination="HoM-Sn-XN5" kind="show" identifier="showNoteViewController" id="XOq-MN-WfT"/>
                                 </connections>
                             </tableViewCell>
                         </prototypes>

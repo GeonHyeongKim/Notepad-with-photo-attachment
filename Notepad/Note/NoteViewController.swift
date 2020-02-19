@@ -6,9 +6,13 @@
 //  Copyright © 2020 geonhyeong. All rights reserved.
 //
 import UIKit
-import Foundation
 
 class NoteViewController: UIViewController {
+    var lblTitle: String!
+    var lblContents: String!
+    var lblLastModifiedDate: String!
+    var colorImportance: UIColor!
+
     override func viewDidLoad() {
         super.viewDidLoad()
         NSLog("---> Note Start")
@@ -22,7 +26,7 @@ class NoteViewController: UIViewController {
     
     override func prepare(for segue: UIStoryboardSegue, sender: Any?) { // 임시
         if(segue.identifier == "showPhotoLibrary"){
-            let PhotoLibraryViewController = segue.destination as? PhotoLibraryViewController
+
         }
     }
     

@@ -127,7 +127,6 @@ extension PhotoLibraryViewController: UICollectionViewDataSource {
         
         
         
-        //        cell.ivThumb.image = libraryPhotos[indexPath.row]
         //        let minute = Int(floor(asset.duration)) / 60
         //        let second = Int(floor(asset.duration)) % 60
         //        cell.lblTime.text = String.init(format: "%02d:%02d", minute, second)
