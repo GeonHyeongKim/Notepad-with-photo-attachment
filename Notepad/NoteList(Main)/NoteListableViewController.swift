@@ -15,27 +15,43 @@ class NoteListableViewController: UITableViewController {
         NSLog("---> App Loading Start")
         NSLog("---> Note List Start")
         
+        self.setup()
+
+    }
+    
+    private func setup(){
+        self.setupNavigation()
+    }
+    
+    func setupNavigation() {
+        self.navigationController?.navigationBar.tintColor = .yellow
     }
     
     override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
         if(segue.identifier == "showNoteViewController"){
-            let noteViewController = segue.destination as? NoteViewController
-            let sender = sender as? Note
-            noteViewController?.lblTitle = sender?.lastDate
-            noteViewController?.lblContents = sender?.conetent
-            noteViewController?.lblLastModifiedDate = sender?.lastDate
-            noteViewController?.colorImportance = sender?.importance
+            if sender != nil {
+                let noteViewController = segue.destination as? NoteViewController
+                noteViewController?.note = sender as? Note
+//                let sender = sender as? Note
+//                noteViewController?.lblTitle = sender?.lastDate
+//                noteViewController?.lblContents = sender?.conetent
+//                noteViewController?.lblLastModifiedDate = sender?.lastDate
+//                noteViewController?.colorImportance = sender?.importance
+            }
         }
+    }
+    
+    // 새로운 노트를 만드는 기능
+    @IBAction func openNewNote(_ sender: Any){
+        self.performSegue(withIdentifier: "showNoteViewController", sender: nil)
     }
     
     // MARK: - Table view data source
     override func numberOfSections(in tableView: UITableView) -> Int {
-        // #warning Incomplete implementation, return the number of sections
         return 1
     }
     
     override func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        // #warning Incomplete implementation, return the number of rows
         let rowCnt = dataCenter.noteList.count
         return rowCnt
     }

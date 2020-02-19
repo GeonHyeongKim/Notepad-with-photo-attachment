@@ -21,6 +21,7 @@
 		57CAEC7423F9A40E00674041 /* ExtUINavigation.swift in Sources */ = {isa = PBXBuildFile; fileRef = 57CAEC7323F9A40E00674041 /* ExtUINavigation.swift */; };
 		57CAEC7623F9B6B100674041 /* ExtUITabBar.swift in Sources */ = {isa = PBXBuildFile; fileRef = 57CAEC7523F9B6B100674041 /* ExtUITabBar.swift */; };
 		57CAEC7823FA846800674041 /* PhotoLibraryCollectionViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 57CAEC7723FA846800674041 /* PhotoLibraryCollectionViewCell.swift */; };
+		57CAEC7E23FD571100674041 /* NoteEditViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 57CAEC7D23FD571100674041 /* NoteEditViewModel.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -40,6 +41,7 @@
 		57CAEC7323F9A40E00674041 /* ExtUINavigation.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ExtUINavigation.swift; sourceTree = "<group>"; };
 		57CAEC7523F9B6B100674041 /* ExtUITabBar.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ExtUITabBar.swift; sourceTree = "<group>"; };
 		57CAEC7723FA846800674041 /* PhotoLibraryCollectionViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PhotoLibraryCollectionViewCell.swift; sourceTree = "<group>"; };
+		57CAEC7D23FD571100674041 /* NoteEditViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NoteEditViewModel.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -100,6 +102,7 @@
 			isa = PBXGroup;
 			children = (
 				57CAEC6823F98C9A00674041 /* NoteViewController.swift */,
+				57CAEC7D23FD571100674041 /* NoteEditViewModel.swift */,
 			);
 			path = Note;
 			sourceTree = "<group>";
@@ -196,6 +199,7 @@
 			files = (
 				57CAEC6F23F993B600674041 /* NoteListableViewController.swift in Sources */,
 				57CAEC7623F9B6B100674041 /* ExtUITabBar.swift in Sources */,
+				57CAEC7E23FD571100674041 /* NoteEditViewModel.swift in Sources */,
 				572B62E823F9702000FFEB29 /* AppDelegate.swift in Sources */,
 				57CAEC7823FA846800674041 /* PhotoLibraryCollectionViewCell.swift in Sources */,
 				57CAEC7223F9A16D00674041 /* PhotoLibraryViewController.swift in Sources */,

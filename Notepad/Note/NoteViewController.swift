@@ -8,19 +8,24 @@
 import UIKit
 
 class NoteViewController: UIViewController {
-    var lblTitle: String!
-    var lblContents: String!
-    var lblLastModifiedDate: String!
-    var colorImportance: UIColor!
+//    var lblTitle: String!
+//    var lblContents: String!
+//    var lblLastModifiedDate: String!
+//    var colorImportance: UIColor!
+    var note: Note!
 
     override func viewDidLoad() {
         super.viewDidLoad()
         NSLog("---> Note Start")
-        self.seupNavigation()
         
+        self.setup()        
     }
     
-    func seupNavigation() {
+    private func setup(){
+        self.setupNavigation()
+    }
+    
+    func setupNavigation() {
         self.navigationController?.navigationBar.tintColor = .yellow
     }
     
@@ -29,7 +34,6 @@ class NoteViewController: UIViewController {
 
         }
     }
-    
     
     @IBAction func openPhotoLibrary(_ sender: Any){
         let optionMenuAlert = UIAlertController(title: nil, message: nil, preferredStyle: .actionSheet)

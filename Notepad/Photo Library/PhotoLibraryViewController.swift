@@ -19,7 +19,8 @@ class PhotoLibraryViewController: UIViewController {
     
     var photoDelegate: SendPhotoDataDelegate?
     var libraryPhotos = [UIImage]()
-//    var allPhotos: PHFetchResult<PHAsset>?
+    var selectedPhotos = [UIImage]()
+    
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -70,7 +71,7 @@ class PhotoLibraryViewController: UIViewController {
         myAlert.addAction(okAction)
         self.present(myAlert, animated:true, completion:nil)
     }
-
+    
     private func getLibraryData(){
         let fetchOptions = PHFetchOptions()
         fetchOptions.sortDescriptors = [NSSortDescriptor(key: "creationDate", ascending: false)]
@@ -111,6 +112,11 @@ class PhotoLibraryViewController: UIViewController {
         imageRequestOptions.deliveryMode = .highQualityFormat
         imageRequestOptions.resizeMode = .exact
         return imageRequestOptions
+    }
+    
+    @IBAction func openFinalSelection(_ sender: Any){
+        self.photoDelegate?.sendPhoto(photos: selectedPhotos) // 상위 controller에 photo data 넘겨주기
+        dismiss(animated: true, completion: nil)
     }
 }
 
