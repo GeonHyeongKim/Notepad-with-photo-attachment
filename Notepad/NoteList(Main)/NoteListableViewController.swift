@@ -19,6 +19,10 @@ class NoteListableViewController: UITableViewController {
 
     }
     
+    override func viewWillAppear(_ animated: Bool) {
+        self.tableView.reloadData()
+    }
+    
     private func setup(){
         self.setupNavigation()
     }

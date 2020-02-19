@@ -22,6 +22,7 @@
 		57CAEC7623F9B6B100674041 /* ExtUITabBar.swift in Sources */ = {isa = PBXBuildFile; fileRef = 57CAEC7523F9B6B100674041 /* ExtUITabBar.swift */; };
 		57CAEC7823FA846800674041 /* PhotoLibraryCollectionViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 57CAEC7723FA846800674041 /* PhotoLibraryCollectionViewCell.swift */; };
 		57CAEC7E23FD571100674041 /* NoteEditViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 57CAEC7D23FD571100674041 /* NoteEditViewModel.swift */; };
+		57CAEC8023FD5B4700674041 /* UIViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 57CAEC7F23FD5B4700674041 /* UIViewController.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -42,6 +43,7 @@
 		57CAEC7523F9B6B100674041 /* ExtUITabBar.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ExtUITabBar.swift; sourceTree = "<group>"; };
 		57CAEC7723FA846800674041 /* PhotoLibraryCollectionViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PhotoLibraryCollectionViewCell.swift; sourceTree = "<group>"; };
 		57CAEC7D23FD571100674041 /* NoteEditViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NoteEditViewModel.swift; sourceTree = "<group>"; };
+		57CAEC7F23FD5B4700674041 /* UIViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UIViewController.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -94,6 +96,7 @@
 				57CAEC6023F97A8E00674041 /* ExtUIStoryboardSegue.swift */,
 				57CAEC7323F9A40E00674041 /* ExtUINavigation.swift */,
 				57CAEC7523F9B6B100674041 /* ExtUITabBar.swift */,
+				57CAEC7F23FD5B4700674041 /* UIViewController.swift */,
 			);
 			path = Extensions;
 			sourceTree = "<group>";
@@ -204,6 +207,7 @@
 				57CAEC7823FA846800674041 /* PhotoLibraryCollectionViewCell.swift in Sources */,
 				57CAEC7223F9A16D00674041 /* PhotoLibraryViewController.swift in Sources */,
 				57CAEC6123F97A8E00674041 /* ExtUIStoryboardSegue.swift in Sources */,
+				57CAEC8023FD5B4700674041 /* UIViewController.swift in Sources */,
 				57CAEC6D23F991B300674041 /* DataCenter.swift in Sources */,
 				57CAEC6923F98C9A00674041 /* NoteViewController.swift in Sources */,
 				572B62EA23F9702000FFEB29 /* SceneDelegate.swift in Sources */,

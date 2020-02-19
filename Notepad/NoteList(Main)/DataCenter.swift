@@ -23,10 +23,10 @@ class DataCenter {
 }
 
 class Note {
-    let title: String
-    let conetent: String
-    let lastDate: String
-    let importance: UIColor
+    var title: String
+    var conetent: String
+    var lastDate: String
+    var importance: UIColor
     
     init(title:String, conetent: String, lastDate: String, importance: UIColor) {
         self.title = title

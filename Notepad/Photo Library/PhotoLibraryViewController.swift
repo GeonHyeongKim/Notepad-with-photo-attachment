@@ -39,37 +39,12 @@ class PhotoLibraryViewController: UIViewController {
     
     func setupNavigation() {
         self.navigationController?.navigationBar.tintColor = .yellow
+        self.navigationController?.navigationBar.titleTextAttributes = [NSAttributedString.Key.foregroundColor: UIColor.yellow]
     }
     
     
     func setupPhotoLibrary(){
-        self.checkPhotoLibraryAuthorizationStatus()
-    }
-    
-    // Load Photos
-    private func checkPhotoLibraryAuthorizationStatus(){
-        PHPhotoLibrary.requestAuthorization { (status) in
-            switch status {
-            case .authorized:
-                self.getLibraryData()
-            case .denied, .restricted:
-                self.alertPhotoLibrary()
-            case .notDetermined:
-                PHPhotoLibrary.requestAuthorization() { status in
-                    guard status == .authorized else { return }
-                    self.getLibraryData()
-                }
-            @unknown default:
-                print("Photo Library Authorization Status에서 에러발생")
-            }
-        }
-    }
-    
-    private func alertPhotoLibrary() {
-        let myAlert = UIAlertController(title: "사진 보관함에 접근 불가", message: "사진 보관함에 접근할 수 있도록, 앱 개인 정보 설정으로 이동하여 접근 허용해 주세요.", preferredStyle: .alert)
-        let okAction = UIAlertAction(title: "OK", style: .default, handler: nil)
-        myAlert.addAction(okAction)
-        self.present(myAlert, animated:true, completion:nil)
+        self.getLibraryData()
     }
     
     private func getLibraryData(){
@@ -116,7 +91,7 @@ class PhotoLibraryViewController: UIViewController {
     
     @IBAction func openFinalSelection(_ sender: Any){
         self.photoDelegate?.sendPhoto(photos: selectedPhotos) // 상위 controller에 photo data 넘겨주기
-        dismiss(animated: true, completion: nil)
+        self.navigationController?.popViewController(animated: true)
     }
 }
 
