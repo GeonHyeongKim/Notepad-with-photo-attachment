@@ -12,8 +12,6 @@ class NoteListTableViewCell: UITableViewCell {
     @IBOutlet weak var lblTitle: UILabel!
     @IBOutlet weak var lblContents: UILabel!
     @IBOutlet weak var lblLastModifiedDate: UILabel!
-    
-    override func prepareForReuse() -> Void {
-   
-    }
+    @IBOutlet weak var impormationView: UIView!
+
 }

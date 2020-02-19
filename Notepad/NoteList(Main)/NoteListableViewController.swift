@@ -41,6 +41,9 @@ class NoteListableViewController: UITableViewController {
         let note = dataCenter.noteList[indexPath.row]
         
         cell.lblTitle.text = note.title
+        cell.lblContents.text = note.conetent
+        cell.lblLastModifiedDate.text = note.lastDate
+        cell.impormationView.backgroundColor = note.importance
         
         return cell
     }

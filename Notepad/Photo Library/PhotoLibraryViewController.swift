@@ -9,11 +9,17 @@
 import UIKit
 import Photos
 
+protocol SendPhotoDataDelegate: class {
+    func sendPhoto(photos: [UIImage])
+}
+
 class PhotoLibraryViewController: UIViewController {
     @IBOutlet weak var cvPhotoLibrary: UICollectionView!
     @IBOutlet weak var activityIndicator: UIActivityIndicatorView!
     
-    var photos = [UIImage]()
+    var photoDelegate: SendPhotoDataDelegate?
+    var libraryPhotos = [UIImage]()
+//    var allPhotos: PHFetchResult<PHAsset>?
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -34,27 +40,37 @@ class PhotoLibraryViewController: UIViewController {
         self.navigationController?.navigationBar.tintColor = .yellow
     }
     
+    
+    func setupPhotoLibrary(){
+        self.checkPhotoLibraryAuthorizationStatus()
+    }
+    
     // Load Photos
-    private func setupPhotoLibrary(){
+    private func checkPhotoLibraryAuthorizationStatus(){
         PHPhotoLibrary.requestAuthorization { (status) in
             switch status {
             case .authorized:
                 self.getLibraryData()
             case .denied, .restricted:
-                let myAlert = UIAlertController(title: "사진 보관함에 접근 불가", message: "사진 보관함에 접근할 수 있도록 허용해 주세요.", preferredStyle: .alert)
-                let okAction = UIAlertAction(title: "OK", style: .default, handler: nil)
-                myAlert.addAction(okAction)
-                self.present(myAlert, animated:true, completion:nil)
+                self.alertPhotoLibrary()
             case .notDetermined:
                 PHPhotoLibrary.requestAuthorization() { status in
                     guard status == .authorized else { return }
                     self.getLibraryData()
-                }            default:
-                    print("예외상황 발생")
+                }
+            @unknown default:
+                print("Photo Library Authorization Status에서 에러발생")
             }
         }
     }
     
+    private func alertPhotoLibrary() {
+        let myAlert = UIAlertController(title: "사진 보관함에 접근 불가", message: "사진 보관함에 접근할 수 있도록, 앱 개인 정보 설정으로 이동하여 접근 허용해 주세요.", preferredStyle: .alert)
+        let okAction = UIAlertAction(title: "OK", style: .default, handler: nil)
+        myAlert.addAction(okAction)
+        self.present(myAlert, animated:true, completion:nil)
+    }
+
     private func getLibraryData(){
         let fetchOptions = PHFetchOptions()
         fetchOptions.sortDescriptors = [NSSortDescriptor(key: "creationDate", ascending: false)]
@@ -75,7 +91,7 @@ class PhotoLibraryViewController: UIViewController {
                 
                 PHImageManager.default().requestImage(for: asset, targetSize: CGSize(width: 200, height: 200), contentMode: .aspectFill, options: self.imageOption()) { (image, _) in
                     if(image != nil){
-                        self.photos.append(image!)
+                        self.libraryPhotos.append(image!)
                     }
                     dispatchGroup.leave()
                 }
@@ -102,12 +118,19 @@ class PhotoLibraryViewController: UIViewController {
 extension PhotoLibraryViewController: UICollectionViewDataSource {
     
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
-        return photos.count
+        return libraryPhotos.count
     }
     
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
         let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "PhotoLibraryCollectionViewCell", for: indexPath) as! PhotoLibraryCollectionViewCell
-        cell.ivThumb.image = self.photos[indexPath.item]
+        cell.ivThumb.image = self.libraryPhotos[indexPath.item]
+        
+        
+        
+        //        cell.ivThumb.image = libraryPhotos[indexPath.row]
+        //        let minute = Int(floor(asset.duration)) / 60
+        //        let second = Int(floor(asset.duration)) % 60
+        //        cell.lblTime.text = String.init(format: "%02d:%02d", minute, second)
         
         return cell
     }

@@ -55,3 +55,13 @@ class NoteViewController: UIViewController {
         self.present(optionMenuAlert, animated: true)
     }
 }
+
+
+// MARK: - NoteViewControllerDeleagate
+extension NoteViewController: SendPhotoDataDelegate {
+    func sendPhoto(photos: [UIImage]) {
+        DispatchQueue.main.async {
+            
+        }
+    }
+}

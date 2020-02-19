@@ -14,8 +14,8 @@ class DataCenter {
     var noteList: [Note] = []
     
     init() {
-        let title1 = Note(title: "A 메모")
-        let title2 = Note(title: "B 메모")
+        let title1 = Note(title: "A 메모", conetent: "A내용", lastDate: "2020/02/01", importance: .red)
+        let title2 = Note(title: "B 메모", conetent: "B내용", lastDate: "2020/02/22", importance: .blue)
         
         noteList.append(title1)
         noteList.append(title2)
@@ -24,8 +24,14 @@ class DataCenter {
 
 class Note {
     let title: String
+    let conetent: String
+    let lastDate: String
+    let importance: UIColor
     
-    init(title:String) {
+    init(title:String, conetent: String, lastDate: String, importance: UIColor) {
         self.title = title
+        self.conetent = conetent
+        self.lastDate = lastDate
+        self.importance = importance
     }
 }
