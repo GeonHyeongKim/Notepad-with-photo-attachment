@@ -10,6 +10,9 @@ import UIKit
 
 class NoteListableViewController: UITableViewController {
     
+    var db:DBHelper = DBHelper()
+    var notes:[NoteModel] = []
+    
     override func viewDidLoad() {
         super.viewDidLoad()
         NSLog("---> App Loading Start")
@@ -21,6 +24,12 @@ class NoteListableViewController: UITableViewController {
     
     override func viewWillAppear(_ animated: Bool) {
         self.tableView.reloadData()
+        
+        db.insertNote(id: 0, title: "A 제목", conetent: "A 내용", lastDate: "2020/02/01", importance: .black)
+        db.insertNote(id: 1, title: "B 제목", conetent: "B 내용", lastDate: "2020/02/03", importance: .red)
+        db.insertNote(id: 2, title: "C 제목", conetent: "C 내용", lastDate: "2020/02/22", importance: .blue)
+        
+        notes = db.read()
     }
     
     private func setup(){
@@ -36,11 +45,6 @@ class NoteListableViewController: UITableViewController {
             if sender != nil {
                 let noteViewController = segue.destination as? NoteViewController
                 noteViewController?.note = sender as? Note
-//                let sender = sender as? Note
-//                noteViewController?.lblTitle = sender?.lastDate
-//                noteViewController?.lblContents = sender?.conetent
-//                noteViewController?.lblLastModifiedDate = sender?.lastDate
-//                noteViewController?.colorImportance = sender?.importance
             }
         }
     }
@@ -56,14 +60,14 @@ class NoteListableViewController: UITableViewController {
     }
     
     override func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        let rowCnt = dataCenter.noteList.count
+        let rowCnt = notes.count
         return rowCnt
     }
     
     override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let cell = tableView.dequeueReusableCell(withIdentifier: "NoteListTableViewCell", for: indexPath) as! NoteListTableViewCell
         
-        let note = dataCenter.noteList[indexPath.row]
+        let note = notes[indexPath.row]
         
         cell.lblTitle.text = note.title
         cell.lblContents.text = note.conetent

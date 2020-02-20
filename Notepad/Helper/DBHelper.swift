@@ -44,7 +44,7 @@ class DBHelper
     
     /// create note table
     func createNoteTable() {
-        let createTableString = "CREATE TABLE IF NOT EXISTS note(Id INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT, title TEXT,content TEXT, lastDate TEXT, importance TEXT);"
+        let createTableString = "CREATE TABLE IF NOT EXISTS note(Id INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT, title TEXT, content TEXT, lastDate TEXT, importance TEXT);"
         var createTableStatement: OpaquePointer? = nil
         if sqlite3_prepare_v2(db, createTableString, -1, &createTableStatement, nil) == SQLITE_OK
         {
@@ -90,7 +90,7 @@ class DBHelper
             }
         }
         
-        let insertStatementString = "INSERT INTO note (id, title, conetent, lastDate, importance) VALUES (?, ?, ?, ?, ?);"
+        let insertStatementString = "INSERT INTO note (id, title, content, lastDate, importance) VALUES (?, ?, ?, ?, ?);"
         var insertStatement: OpaquePointer? = nil
         if sqlite3_prepare_v2(db, insertStatementString, -1, &insertStatement, nil) == SQLITE_OK {
             sqlite3_bind_int(insertStatement, 1, Int32(id))
