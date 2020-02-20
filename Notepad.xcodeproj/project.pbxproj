@@ -23,7 +23,7 @@
 		57CAEC7823FA846800674041 /* PhotoLibraryCollectionViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 57CAEC7723FA846800674041 /* PhotoLibraryCollectionViewCell.swift */; };
 		57CAEC7E23FD571100674041 /* NoteEditViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 57CAEC7D23FD571100674041 /* NoteEditViewModel.swift */; };
 		57CAEC8023FD5B4700674041 /* UIViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 57CAEC7F23FD5B4700674041 /* UIViewController.swift */; };
-		57CAEC8223FD882F00674041 /* ExtUIButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = 57CAEC8123FD882F00674041 /* ExtUIButton.swift */; };
+		57CAEC8423FE6ED100674041 /* ExtUIView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 57CAEC8323FE6ED100674041 /* ExtUIView.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -45,7 +45,7 @@
 		57CAEC7723FA846800674041 /* PhotoLibraryCollectionViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PhotoLibraryCollectionViewCell.swift; sourceTree = "<group>"; };
 		57CAEC7D23FD571100674041 /* NoteEditViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NoteEditViewModel.swift; sourceTree = "<group>"; };
 		57CAEC7F23FD5B4700674041 /* UIViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UIViewController.swift; sourceTree = "<group>"; };
-		57CAEC8123FD882F00674041 /* ExtUIButton.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ExtUIButton.swift; sourceTree = "<group>"; };
+		57CAEC8323FE6ED100674041 /* ExtUIView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ExtUIView.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -99,7 +99,7 @@
 				57CAEC7323F9A40E00674041 /* ExtUINavigation.swift */,
 				57CAEC7523F9B6B100674041 /* ExtUITabBar.swift */,
 				57CAEC7F23FD5B4700674041 /* UIViewController.swift */,
-				57CAEC8123FD882F00674041 /* ExtUIButton.swift */,
+				57CAEC8323FE6ED100674041 /* ExtUIView.swift */,
 			);
 			path = Extensions;
 			sourceTree = "<group>";
@@ -204,9 +204,9 @@
 			buildActionMask = 2147483647;
 			files = (
 				57CAEC6F23F993B600674041 /* NoteListableViewController.swift in Sources */,
-				57CAEC8223FD882F00674041 /* ExtUIButton.swift in Sources */,
 				57CAEC7623F9B6B100674041 /* ExtUITabBar.swift in Sources */,
 				57CAEC7E23FD571100674041 /* NoteEditViewModel.swift in Sources */,
+				57CAEC8423FE6ED100674041 /* ExtUIView.swift in Sources */,
 				572B62E823F9702000FFEB29 /* AppDelegate.swift in Sources */,
 				57CAEC7823FA846800674041 /* PhotoLibraryCollectionViewCell.swift in Sources */,
 				57CAEC7223F9A16D00674041 /* PhotoLibraryViewController.swift in Sources */,

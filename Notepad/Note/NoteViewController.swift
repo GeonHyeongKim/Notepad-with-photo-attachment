@@ -13,10 +13,13 @@ class NoteViewController: UIViewController {
     // Note View Model
     var noteViewModel: NoteEditViewModel = NoteEditViewModel()
     
+    // Navigation
+    @IBOutlet weak var btnNavtionRight: UIBarButtonItem!
+    
     // Note
     @IBOutlet weak var importanceView: UIView!
     @IBOutlet weak var txtTitle: UITextField!
-    @IBOutlet weak var txtContens: UITextView!
+    @IBOutlet weak var txtContents: UITextView!
     var note: Note!
     
     // Editor
@@ -50,6 +53,7 @@ class NoteViewController: UIViewController {
     // Camera
     @IBOutlet weak var selectCameraView: UIView!
     
+    
     // TextColor
     @IBOutlet weak var selectTextColorView: UIView!
     @IBOutlet var textColorEditView: UIView!
@@ -67,7 +71,7 @@ class NoteViewController: UIViewController {
     }
     
     override func viewDidAppear(_ animated: Bool) {
-        reload(status: .write)
+        reload(status: .normal)
     }
     
     override func viewWillAppear(_ animated: Bool) {
@@ -94,9 +98,10 @@ class NoteViewController: UIViewController {
     // 저장된 노트 정보 입력
     func setupNote(){
         if note != nil {
+            reload(status: .normal)
             self.importanceView.backgroundColor = note.importance
             self.txtTitle.text = note.title
-            self.txtContens.text = note.conetent
+            self.txtContents.text = note.conetent
         }
     }
     
@@ -104,7 +109,8 @@ class NoteViewController: UIViewController {
         noteViewModel.reload(status: status)
         
         // Navigation
-        self.navigationController?.title = noteViewModel.navigationTitle
+        self.navigationController?.navigationBar.topItem?.title = noteViewModel.navigationTitle
+        self.btnNavtionRight.title = noteViewModel.navigationItemRightTitle
         
         // select View Hidden
         selectTrashView.isHidden = noteViewModel.isHiddenTrashView
@@ -122,11 +128,14 @@ class NoteViewController: UIViewController {
         
         // 각 버튼에 대한 기능
         switch status {
+        case .normal:
+            print("normal")
         case .write:
             print("write")
         case .trash:
             print("trash")
         case .importance:
+            self.dismissKeyboardWhenTouchedAround()
             print("importance")
         case .camera:
             self.openPhotoLibrary()
@@ -164,13 +173,16 @@ class NoteViewController: UIViewController {
         currentEditorIndex = pageIndex
     }
     
-    // 저장
-    @IBAction func saveNote(_ sender: Any){
-        
-        if self.txtTitle.text != nil {
-            dataCenter.noteList[0].title = self.txtTitle.text!
+    // 저장 및 완료
+    @IBAction func finishNote(_ sender: Any){
+        if self.btnNavtionRight.title == "저장" {
+            if self.txtTitle.text != nil {
+                dataCenter.noteList[0].title = self.txtTitle.text!
+            }
+            self.navigationController?.popViewController(animated: true)
+        } else { // 완료
+            self.dismissKeyboardWhenTouchedAround()
         }
-        self.navigationController?.popViewController(animated: true)
     }
     
     // MARK: - Camera
@@ -182,7 +194,7 @@ class NoteViewController: UIViewController {
             (alert: UIAlertAction!) -> Void in
             self.checkPhotoLibraryAuthorizationStatus()
         })
-        let newPhotoAction = UIAlertAction(title: "새로 촬영", style: .default, handler: {
+        let newPhotoAction = UIAlertAction(title: "새로운 촬영", style: .default, handler: {
             (alert: UIAlertAction!) -> Void in
         })
         let linkAction = UIAlertAction(title: "외부 링크 이미지", style: .default, handler: {
@@ -233,9 +245,48 @@ class NoteViewController: UIViewController {
     }
 }
 
-// MARK: - NoteViewControllerDeleagate
+// MARK: - NoteViewControllerDelegate
 extension NoteViewController: SendPhotoDataDelegate {
+    
     func sendPhoto(photos: Set<UIImage>) {
         self.selectedPhotos = photos
+    }
+}
+
+// MARK: - UITextViewDelegate
+extension NoteViewController: UITextViewDelegate {
+    
+    // 편집을 시작될때
+    func textViewDidBeginEditing(_ textView: UITextView) {
+        reload(status: .write)
+        textContensSetupView()
+    }
+    
+    // 편집이 끝날때
+    func textViewDidEndEditing(_ textView: UITextView) {
+        reload(status: .normal)
+        if txtContents.text == "" {
+            textContensSetupView()
+        }
+    }
+    
+    func textView(_ textView: UITextView, shouldChangeTextIn range: NSRange, replacementText text: String) -> Bool {
+        return true
+    }
+    
+    // Keyboard dismiss
+    func dismissKeyboardWhenTouchedAround(){
+        txtContents.resignFirstResponder()
+    }
+    
+    // UITextView PlaceHolder 설정
+    func textContensSetupView() {
+        if txtContents.text == "" {
+            txtContents.text = "내용 입력"
+            txtContents.textColor = UIColor.lightGray
+        } else if txtContents.text == "내용 입력"{
+            txtContents.text = ""
+            txtContents.textColor = UIColor.white
+        }
     }
 }
