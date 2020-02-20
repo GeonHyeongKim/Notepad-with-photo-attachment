@@ -19,7 +19,7 @@ class NoteEditViewModel {
         case newNote
     }
     
-    var isHiddenWriteView = true
+    var isHiddenEditView = true
     var isHiddenTrashView = true
     var isHiddenImportanceView = true
     var isHiddenCameraView = true
@@ -34,58 +34,58 @@ class NoteEditViewModel {
     func reload(status: Status) {
         switch status {
         case .write:
-            isHiddenWriteView = false
+            isHiddenEditView = true
             isHiddenTrashView = true
             isHiddenImportanceView = true
             isHiddenCameraView = true
             isHiddenTextColorView = true
             isHiddenNewNoteView = true
-            navigationTitle = ""
+            navigationTitle = "수정"
             
         case .trash:
-            isHiddenWriteView = true
+            isHiddenEditView = true
             isHiddenTrashView = false
             isHiddenImportanceView = true
             isHiddenCameraView = true
             isHiddenTextColorView = true
             isHiddenNewNoteView = true
-            navigationTitle = ""
+            navigationTitle = "삭제"
             
         case .importance:
-            isHiddenWriteView = true
+            isHiddenEditView = false
             isHiddenTrashView = true
             isHiddenImportanceView = false
             isHiddenCameraView = true
             isHiddenTextColorView = true
             isHiddenNewNoteView = true
-            navigationTitle = ""
+            navigationTitle = "중요도"
             
         case .camera:
-            isHiddenWriteView = true
+            isHiddenEditView = true
             isHiddenTrashView = true
             isHiddenImportanceView = true
             isHiddenCameraView = false
             isHiddenTextColorView = true
             isHiddenNewNoteView = true
-            navigationTitle = ""
+            navigationTitle = "카메라 첨부"
             
         case .textColor:
-            isHiddenWriteView = true
+            isHiddenEditView = false
             isHiddenTrashView = true
             isHiddenImportanceView = true
             isHiddenCameraView = true
             isHiddenTextColorView = false
             isHiddenNewNoteView = true
-            navigationTitle = ""
+            navigationTitle = "텍스트 색상"
             
         case .newNote:
-            isHiddenWriteView = true
+            isHiddenEditView = true
             isHiddenTrashView = true
             isHiddenImportanceView = true
             isHiddenCameraView = true
             isHiddenTextColorView = true
             isHiddenNewNoteView = false
-            navigationTitle = ""
+            navigationTitle = "새 메모"
         }
     }
 }
