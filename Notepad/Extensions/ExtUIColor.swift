@@ -29,24 +29,12 @@ extension UIColor {
     }
     
     var toHex: String? {
-        // Extract Components
-        guard let components = cgColor.components, components.count >= 3 else {
-            return nil
-        }
-        
-        // Helpers
-        let r = Float(components[0])
-        let g = Float(components[1])
-        let b = Float(components[2])
-        var a = Float(1.0)
-        
-        if components.count >= 4 {
-            a = Float(components[3])
-        }
-        
-        // Create Hex String
-        let hex = String(format: "%02lX%02lX%02lX%02lX", lroundf(r * 255), lroundf(g * 255), lroundf(b * 255), lroundf(a * 255))
-        
-        return hex
+        var r:CGFloat = 0
+        var g:CGFloat = 0
+        var b:CGFloat = 0
+        var a:CGFloat = 0
+        getRed(&r, green: &g, blue: &b, alpha: &a)
+        let rgb:Int = (Int)(r*255)<<16 | (Int)(g*255)<<8 | (Int)(b*255)<<0
+        return String(format:"#%06x", rgb)
     }
 }
