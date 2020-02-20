@@ -44,7 +44,7 @@ class NoteListableViewController: UITableViewController {
         if(segue.identifier == "showNoteViewController"){
             if sender != nil {
                 let noteViewController = segue.destination as? NoteViewController
-                noteViewController?.note = sender as? Note
+                noteViewController?.note = sender as? NoteModel
             }
         }
     }
@@ -78,7 +78,7 @@ class NoteListableViewController: UITableViewController {
     }
     
     override func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
-        self.performSegue(withIdentifier: "showNoteViewController", sender: dataCenter.noteList[indexPath.row])
+        self.performSegue(withIdentifier: "showNoteViewController", sender: notes[indexPath.row])
     }
     
     /*

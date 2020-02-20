@@ -20,7 +20,7 @@ class NoteViewController: UIViewController {
     @IBOutlet weak var importanceView: UIView!
     @IBOutlet weak var txtTitle: UITextField!
     @IBOutlet weak var txtContents: UITextView!
-    var note: Note!
+    var note: NoteModel!
     
     // Editor
     @IBOutlet weak var editView: UIView!
