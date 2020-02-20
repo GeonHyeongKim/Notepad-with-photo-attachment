@@ -10,10 +10,54 @@ import Photos
 
 class NoteViewController: UIViewController {
     
-    var note: Note!
+    // Note View Model
+    var noteViewModel: NoteEditViewModel = NoteEditViewModel()
+    
+    // Note
     @IBOutlet weak var importanceView: UIView!
     @IBOutlet weak var txtTitle: UITextField!
     @IBOutlet weak var txtContens: UITextView!
+    var note: Note!
+    
+    // Editor
+    @IBOutlet weak var editView: UIView!
+    var currentEditorIndex: Int = 0 { // button의 tag를 이용
+        willSet(newVal) {
+            switch newVal {
+            case 0:
+                reload(status: .trash)
+            case 1:
+                reload(status: .importance)
+            case 2:
+                reload(status: .camera)
+            case 3:
+                reload(status: .textColor)
+            case 4:
+                reload(status: .newNote)
+            default:
+                reload(status: .write)
+            }
+        }
+    }
+    
+    // Trash
+    @IBOutlet weak var selectTrashView: UIView!
+    
+    // Importance
+    @IBOutlet weak var selectImportanceView: UIView!
+    @IBOutlet var importanceEditView: UIView!
+    
+    // Camera
+    @IBOutlet weak var selectCameraView: UIView!
+    
+    // TextColor
+    @IBOutlet weak var selectTextColorView: UIView!
+    @IBOutlet var textColorEditView: UIView!
+    
+    // NewNote
+    @IBOutlet weak var selectNewNoteView: UIView!
+    
+    var selectedPhotos: Set<UIImage>!
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -22,11 +66,26 @@ class NoteViewController: UIViewController {
         self.setup()        
     }
     
+    override func viewDidAppear(_ animated: Bool) {
+        reload(status: .write)
+    }
+    
+    override func viewWillAppear(_ animated: Bool) {
+        super.viewWillAppear(true)
+        guard let selectedPhotos = selectedPhotos else {
+            return
+        }
+        
+        print(selectedPhotos)
+    }
+    
+    // 초기 설정
     private func setup(){
         self.setupNavigation()
         self.setupNote()
     }
     
+    // Navigation 설정
     func setupNavigation() {
         self.navigationController?.navigationBar.tintColor = .yellow
         self.navigationController?.navigationBar.titleTextAttributes = [NSAttributedString.Key.foregroundColor: UIColor.yellow]
@@ -41,13 +100,81 @@ class NoteViewController: UIViewController {
         }
     }
     
+    private func reload(status: NoteEditViewModel.Status) {
+        noteViewModel.reload(status: status)
+        
+        // Navigation
+        self.navigationController?.title = noteViewModel.navigationTitle
+        
+        // select View Hidden
+        selectTrashView.isHidden = noteViewModel.isHiddenTrashView
+        selectImportanceView.isHidden = noteViewModel.isHiddenImportanceView
+        selectCameraView.isHidden = noteViewModel.isHiddenCameraView
+        selectTextColorView.isHidden = noteViewModel.isHiddenTextColorView
+        selectNewNoteView.isHidden = noteViewModel.isHiddenNewNoteView
+        
+        // Edit Area View Hidden
+        editView.isHidden = noteViewModel.isHiddenEditView
+        
+        for view in editView.subviews {
+            view.removeFromSuperview()
+        }
+        
+        // 각 버튼에 대한 기능
+        switch status {
+        case .write:
+            print("write")
+        case .trash:
+            print("trash")
+        case .importance:
+            print("importance")
+        case .camera:
+            self.openPhotoLibrary()
+        case .textColor:
+            print("textColor")
+        case .newNote:
+            print("newNote")
+        }
+        
+        let editContentView: UIView
+        switch status {
+        case .importance:
+            editContentView = importanceEditView
+        case .textColor:
+            editContentView = textColorEditView
+        default:
+            editContentView = UIView()
+            editContentView.isHidden = true
+        }
+        
+        editView.addSubview(editContentView)
+        editView.addConstraintsFitParentView(editContentView)
+    }
+    
     override func prepare(for segue: UIStoryboardSegue, sender: Any?) { // 임시
         if(segue.identifier == "showPhotoLibrary"){
-            
+            let photoLibraryViewController = segue.destination as? PhotoLibraryViewController
+            photoLibraryViewController?.photoDelegate = self // photo data 받아오기
         }
     }
     
-    @IBAction func openPhotoLibrary(_ sender: Any){
+    // Edit 버튼에 대한 각각의 Action
+    @IBAction func touchPageMenuButton(_ sender: UIButton) {
+        let pageIndex = sender.tag
+        currentEditorIndex = pageIndex
+    }
+    
+    // 저장
+    @IBAction func saveNote(_ sender: Any){
+        
+        if self.txtTitle.text != nil {
+            dataCenter.noteList[0].title = self.txtTitle.text!
+        }
+        self.navigationController?.popViewController(animated: true)
+    }
+    
+    // MARK: - Camera
+    func openPhotoLibrary(){
         let optionMenuAlert = UIAlertController(title: nil, message: nil, preferredStyle: .actionSheet)
         
         //옵션 초기화
@@ -104,22 +231,11 @@ class NoteViewController: UIViewController {
             self.present(myAlert, animated:true, completion:nil)
         }
     }
-    
-    // 저장
-    @IBAction func saveNote(_ sender: Any){
-        
-        if self.txtTitle.text != nil {
-            dataCenter.noteList[0].title = self.txtTitle.text!
-        }
-        self.navigationController?.popViewController(animated: true)
-    }
 }
 
 // MARK: - NoteViewControllerDeleagate
 extension NoteViewController: SendPhotoDataDelegate {
-    func sendPhoto(photos: [UIImage]) {
-        DispatchQueue.main.async {
-            
-        }
+    func sendPhoto(photos: Set<UIImage>) {
+        self.selectedPhotos = photos
     }
 }
