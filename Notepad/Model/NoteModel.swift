@@ -10,7 +10,7 @@ import UIKit
 
 class NoteModel
 {
-    var id: Int = 0
+    var id: Int
     var title: String
     var conetent: String
     var lastDate: String
