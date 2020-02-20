@@ -9,6 +9,8 @@
 import UIKit
 import SQLite3
 
+var db:DBHelper = DBHelper()
+
 class DBHelper
 {
     init()
@@ -93,7 +95,7 @@ class DBHelper
         let insertStatementString = "INSERT INTO note (id, title, content, lastDate, importance) VALUES (?, ?, ?, ?, ?);"
         var insertStatement: OpaquePointer? = nil
         if sqlite3_prepare_v2(db, insertStatementString, -1, &insertStatement, nil) == SQLITE_OK {
-            sqlite3_bind_int(insertStatement, 1, Int32(id))
+//            sqlite3_bind_int(insertStatement, 1, Int32(id)) --> 자동입력
             sqlite3_bind_text(insertStatement, 2, (title as NSString).utf8String, -1, nil)
             sqlite3_bind_text(insertStatement, 3, (conetent as NSString).utf8String, -1, nil)
             sqlite3_bind_text(insertStatement, 4, (lastDate as NSString).utf8String, -1, nil)
@@ -131,6 +133,8 @@ class DBHelper
         sqlite3_finalize(queryStatement)
         return noteModels
     }
+    
+    
     
     func deleteByID(id:Int) {
         let deleteStatementStirng = "DELETE FROM note WHERE Id = ?;"
