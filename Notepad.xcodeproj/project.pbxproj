@@ -24,6 +24,11 @@
 		57CAEC7E23FD571100674041 /* NoteEditViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 57CAEC7D23FD571100674041 /* NoteEditViewModel.swift */; };
 		57CAEC8023FD5B4700674041 /* UIViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 57CAEC7F23FD5B4700674041 /* UIViewController.swift */; };
 		57CAEC8423FE6ED100674041 /* ExtUIView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 57CAEC8323FE6ED100674041 /* ExtUIView.swift */; };
+		57FCB92423FED9510009E3AF /* ExtSQLiteDatabase.swift in Sources */ = {isa = PBXBuildFile; fileRef = 57FCB92323FED9510009E3AF /* ExtSQLiteDatabase.swift */; };
+		57FCB92723FEDBAF0009E3AF /* NoteModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 57FCB92623FEDBAF0009E3AF /* NoteModel.swift */; };
+		57FCB92A23FEDC720009E3AF /* DBHelper.swift in Sources */ = {isa = PBXBuildFile; fileRef = 57FCB92923FEDC720009E3AF /* DBHelper.swift */; };
+		57FCB92E23FF028E0009E3AF /* ImageModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 57FCB92D23FF028E0009E3AF /* ImageModel.swift */; };
+		57FCB93223FF07A40009E3AF /* ExtUIColor.swift in Sources */ = {isa = PBXBuildFile; fileRef = 57FCB93123FF07A40009E3AF /* ExtUIColor.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -46,6 +51,11 @@
 		57CAEC7D23FD571100674041 /* NoteEditViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NoteEditViewModel.swift; sourceTree = "<group>"; };
 		57CAEC7F23FD5B4700674041 /* UIViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UIViewController.swift; sourceTree = "<group>"; };
 		57CAEC8323FE6ED100674041 /* ExtUIView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ExtUIView.swift; sourceTree = "<group>"; };
+		57FCB92323FED9510009E3AF /* ExtSQLiteDatabase.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ExtSQLiteDatabase.swift; sourceTree = "<group>"; };
+		57FCB92623FEDBAF0009E3AF /* NoteModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NoteModel.swift; sourceTree = "<group>"; };
+		57FCB92923FEDC720009E3AF /* DBHelper.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DBHelper.swift; sourceTree = "<group>"; };
+		57FCB92D23FF028E0009E3AF /* ImageModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ImageModel.swift; sourceTree = "<group>"; };
+		57FCB93123FF07A40009E3AF /* ExtUIColor.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ExtUIColor.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -81,6 +91,8 @@
 				572B62E723F9702000FFEB29 /* AppDelegate.swift */,
 				572B62E923F9702000FFEB29 /* SceneDelegate.swift */,
 				57CAEC5F23F97A7200674041 /* Extensions */,
+				57FCB92523FEDB6F0009E3AF /* Model */,
+				57FCB92823FEDC550009E3AF /* Helper */,
 				57CAEC6523F97D2700674041 /* NoteList(Main) */,
 				57CAEC6223F97CAC00674041 /* Note */,
 				57CAEC7023F9A13D00674041 /* Photo Library */,
@@ -100,6 +112,8 @@
 				57CAEC7523F9B6B100674041 /* ExtUITabBar.swift */,
 				57CAEC7F23FD5B4700674041 /* UIViewController.swift */,
 				57CAEC8323FE6ED100674041 /* ExtUIView.swift */,
+				57FCB92323FED9510009E3AF /* ExtSQLiteDatabase.swift */,
+				57FCB93123FF07A40009E3AF /* ExtUIColor.swift */,
 			);
 			path = Extensions;
 			sourceTree = "<group>";
@@ -130,6 +144,23 @@
 				57CAEC7723FA846800674041 /* PhotoLibraryCollectionViewCell.swift */,
 			);
 			path = "Photo Library";
+			sourceTree = "<group>";
+		};
+		57FCB92523FEDB6F0009E3AF /* Model */ = {
+			isa = PBXGroup;
+			children = (
+				57FCB92623FEDBAF0009E3AF /* NoteModel.swift */,
+				57FCB92D23FF028E0009E3AF /* ImageModel.swift */,
+			);
+			path = Model;
+			sourceTree = "<group>";
+		};
+		57FCB92823FEDC550009E3AF /* Helper */ = {
+			isa = PBXGroup;
+			children = (
+				57FCB92923FEDC720009E3AF /* DBHelper.swift */,
+			);
+			path = Helper;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -203,16 +234,21 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				57FCB92A23FEDC720009E3AF /* DBHelper.swift in Sources */,
 				57CAEC6F23F993B600674041 /* NoteListableViewController.swift in Sources */,
+				57FCB92723FEDBAF0009E3AF /* NoteModel.swift in Sources */,
 				57CAEC7623F9B6B100674041 /* ExtUITabBar.swift in Sources */,
 				57CAEC7E23FD571100674041 /* NoteEditViewModel.swift in Sources */,
 				57CAEC8423FE6ED100674041 /* ExtUIView.swift in Sources */,
 				572B62E823F9702000FFEB29 /* AppDelegate.swift in Sources */,
 				57CAEC7823FA846800674041 /* PhotoLibraryCollectionViewCell.swift in Sources */,
+				57FCB92423FED9510009E3AF /* ExtSQLiteDatabase.swift in Sources */,
+				57FCB93223FF07A40009E3AF /* ExtUIColor.swift in Sources */,
 				57CAEC7223F9A16D00674041 /* PhotoLibraryViewController.swift in Sources */,
 				57CAEC6123F97A8E00674041 /* ExtUIStoryboardSegue.swift in Sources */,
 				57CAEC8023FD5B4700674041 /* UIViewController.swift in Sources */,
 				57CAEC6D23F991B300674041 /* DataCenter.swift in Sources */,
+				57FCB92E23FF028E0009E3AF /* ImageModel.swift in Sources */,
 				57CAEC6923F98C9A00674041 /* NoteViewController.swift in Sources */,
 				572B62EA23F9702000FFEB29 /* SceneDelegate.swift in Sources */,
 				57CAEC7423F9A40E00674041 /* ExtUINavigation.swift in Sources */,
