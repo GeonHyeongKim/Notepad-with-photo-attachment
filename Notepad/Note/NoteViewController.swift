@@ -105,7 +105,7 @@ class NoteViewController: UIViewController {
         }
     }
     
-        // 저장
+    // 저장
     @IBAction func saveNote(_ sender: Any){
         
         if self.txtTitle.text != nil {

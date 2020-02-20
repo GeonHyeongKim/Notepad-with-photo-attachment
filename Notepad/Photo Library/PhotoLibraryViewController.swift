@@ -10,7 +10,7 @@ import UIKit
 import Photos
 
 protocol SendPhotoDataDelegate: class {
-    func sendPhoto(photos: [UIImage])
+    func sendPhoto(photos: Set<UIImage>)
 }
 
 class PhotoLibraryViewController: UIViewController {
@@ -18,9 +18,9 @@ class PhotoLibraryViewController: UIViewController {
     @IBOutlet weak var activityIndicator: UIActivityIndicatorView!
     
     var photoDelegate: SendPhotoDataDelegate?
-    var libraryPhotos = [UIImage]()
-    var selectedPhotos = [UIImage]()
-    
+    var libraryPhotos = [UIImage]() // 전체 사진 Data
+    var selectedPhotos = Set<UIImage>() // 최종 선택된 사진 Data
+    var selectedCells : NSMutableArray = [] // 최종 선택된 IndexPath Data
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -33,6 +33,7 @@ class PhotoLibraryViewController: UIViewController {
         self.setupNavigation()
         self.setupPhotoLibrary()
         
+        self.cvPhotoLibrary.allowsMultipleSelection = true // 다중선택 허용
         self.cvPhotoLibrary.delegate = self
         self.cvPhotoLibrary.dataSource = self
     }
@@ -79,6 +80,7 @@ class PhotoLibraryViewController: UIViewController {
         }
     }
     
+    // imgage의 option을 설정
     private func imageOption() -> PHImageRequestOptions{
         let imageRequestOptions = PHImageRequestOptions()
         imageRequestOptions.version = .current
@@ -89,6 +91,7 @@ class PhotoLibraryViewController: UIViewController {
         return imageRequestOptions
     }
     
+    // 최종 선택 버튼(확인)을 눌렀을 때
     @IBAction func openFinalSelection(_ sender: Any){
         self.photoDelegate?.sendPhoto(photos: selectedPhotos) // 상위 controller에 photo data 넘겨주기
         self.navigationController?.popViewController(animated: true)
@@ -105,13 +108,15 @@ extension PhotoLibraryViewController: UICollectionViewDataSource {
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
         let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "PhotoLibraryCollectionViewCell", for: indexPath) as! PhotoLibraryCollectionViewCell
         cell.ivThumb.image = self.libraryPhotos[indexPath.item]
-        
-        
-        
-        //        let minute = Int(floor(asset.duration)) / 60
-        //        let second = Int(floor(asset.duration)) % 60
-        //        cell.lblTime.text = String.init(format: "%02d:%02d", minute, second)
-        
+
+        if selectedCells.contains(indexPath) { // 선택되었을때
+            cell.isSelected = true
+            cvPhotoLibrary.selectItem(at: indexPath, animated: true, scrollPosition: UICollectionView.ScrollPosition.centeredHorizontally)
+            cell.checkView.isHidden = false
+        } else { // 선택을 풀었을때
+            cell.isSelected = false
+            cell.checkView.isHidden = true
+        }
         return cell
     }
 }
@@ -119,16 +124,23 @@ extension PhotoLibraryViewController: UICollectionViewDataSource {
 // MARK: - Collection View Delegate
 extension PhotoLibraryViewController: UICollectionViewDelegate {
     
-    func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
-        //        let videoUrl = urlList[indexPath.row]
-        //        self.performSegue(withIdentifier: "showVideoEditorViewController", sender: videoUrl)
+    func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) { //선택을 했을때
+        self.selectedCells.add(indexPath)
+        self.selectedPhotos.insert(self.libraryPhotos[indexPath.row])
+        self.cvPhotoLibrary.reloadItems(at: [indexPath])
     }
+    
+    func collectionView(_ collectionView: UICollectionView, didDeselectItemAt indexPath: IndexPath) { //선택을 풀었을때
+        self.selectedCells.remove(indexPath)
+        self.selectedPhotos.remove(self.libraryPhotos[indexPath.row])
+        self.cvPhotoLibrary.reloadItems(at: [indexPath])
+     }
 }
 
 // MARK: - Collection View Delegate Flow Layout
 extension PhotoLibraryViewController: UICollectionViewDelegateFlowLayout {
     
-    var numberOfCellsInRow: Int { return 3 }
+    var numberOfCellsInRow: Int { return 3 } // 1개의 행에 3개씩
     var cellSpacing: CGFloat { return 1 }
     var cellWidth: CGFloat {
         let deviceWidth = UIScreen.main.bounds.width

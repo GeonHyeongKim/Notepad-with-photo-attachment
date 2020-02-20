@@ -10,6 +10,5 @@ import UIKit
 
 class PhotoLibraryCollectionViewCell: UICollectionViewCell {
     @IBOutlet weak var ivThumb: UIImageView!
-    @IBOutlet weak var btnSelect: UIButton!
-    
+    @IBOutlet weak var checkView: UIView!
 }
