@@ -8,10 +8,17 @@
 import UIKit
 import Photos
 
+protocol SendNoteDataDelegate: class {
+    func sendNote(note: NoteModel)
+}
+
 class NoteViewController: UIViewController {
     
     // Note View Model
     var noteViewModel: NoteEditViewModel = NoteEditViewModel()
+    
+    // Note data Delegate
+    var noteDelegate: SendNoteDataDelegate?
     
     // Navigation
     @IBOutlet weak var btnNavtionRight: UIBarButtonItem!
@@ -49,6 +56,11 @@ class NoteViewController: UIViewController {
     // Importance
     @IBOutlet weak var selectImportanceView: UIView!
     @IBOutlet var importanceEditView: UIView!
+    let colorList: [UIColor] = [
+        UIColor(hexString: "#FFFFFF"), UIColor(hexString: "#000000"), UIColor(hexString: "#489CFF"), UIColor(hexString: "#53C14B"), UIColor(hexString: "#FACE15"),
+        UIColor(hexString: "#FFBB00"), UIColor(hexString: "#FF5E00"), UIColor(hexString: "#FF007F"), UIColor(hexString: "#8041D9" as String)
+    ]
+    var currentImportanceColorIndex: Int = 0 // 현재 중요도 색상
     
     // Camera
     @IBOutlet weak var selectCameraView: UIView!
@@ -101,7 +113,7 @@ class NoteViewController: UIViewController {
             reload(status: .normal)
             self.importanceView.backgroundColor = note.importance
             self.txtTitle.text = note.title
-            self.txtContents.text = note.conetent
+            self.txtContents.text = note.content
         }
     }
     
@@ -136,13 +148,12 @@ class NoteViewController: UIViewController {
             self.presentDeleteAlert(title: "메모를 삭제 하겠습니까?", message: "")
         case .importance:
             self.dismissKeyboardWhenTouchedAround()
-            print("importance")
         case .camera:
             self.openPhotoLibrary()
         case .textColor:
             print("textColor")
         case .newNote:
-            print("newNote")
+            self.newNote()
         }
         
         let editContentView: UIView
@@ -199,8 +210,7 @@ class NoteViewController: UIViewController {
     // 저장 및 완료
     @IBAction func finishNote(_ sender: Any){
         if self.btnNavtionRight.title == "저장" {
-            if self.txtTitle.text != nil {
-            }
+            self.saveNote()
             self.navigationController?.popViewController(animated: true)
         } else { // 완료
             self.dismissKeyboardWhenTouchedAround()
@@ -213,6 +223,11 @@ class NoteViewController: UIViewController {
         self.navigationController?.popViewController(animated: true)
     }
     
+    // MARK: - Importance
+    @IBAction func touchImportanceColorPicker(_ sender: UIButton) {
+        self.currentImportanceColorIndex = sender.tag
+        self.importanceView.backgroundColor =  self.colorList[currentImportanceColorIndex]
+    }
     // MARK: - Camera
     func openPhotoLibrary(){
         let optionMenuAlert = UIAlertController(title: nil, message: nil, preferredStyle: .actionSheet)
@@ -265,14 +280,31 @@ class NoteViewController: UIViewController {
     }
     
     // MARK: - New Note
-    private func saveNote() {
-
+    private func newNote() {
+        self.saveNote()
+        self.clearNote()
+        db.insertNote(id: 0, title: note.title, content: note.content, lastDate: currentDate(), importance: .white)
+        self.note.id = db.readLast().id
     }
     
-    private func clearText() {
+    // DB에 Note 정보 업데이트 시키기
+    private func saveNote() {
+        db.update(id: note.id, title: note.title, content: note.content, lastDate: currentDate(), importance: colorList[currentImportanceColorIndex])
+    }
+    
+    private func clearNote() {
         self.txtTitle.text = ""
         self.txtContents.text = "내용 입력"
         self.txtContents.textColor = UIColor.lightGray
+        self.importanceView.backgroundColor = .white
+    }
+    
+    // 현재 날짜 구하기
+    func currentDate() -> String{
+        let now = NSDate()
+        let dateFormatter = DateFormatter()
+        dateFormatter.dateFormat = "yyyy/MM/dd"
+        return dateFormatter.string(from: now as Date)
     }
 }
 

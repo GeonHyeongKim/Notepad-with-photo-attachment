@@ -13,5 +13,4 @@ class NoteListTableViewCell: UITableViewCell {
     @IBOutlet weak var lblContents: UILabel!
     @IBOutlet weak var lblLastModifiedDate: UILabel!
     @IBOutlet weak var impormationView: UIView!
-
 }

@@ -11,15 +11,15 @@ import UIKit
 class NoteModel
 {
     var id: Int
-    var title: String
-    var conetent: String
+    var title: String = ""
+    var content: String = "내용 입력"
     var lastDate: String
-    var importance: UIColor
+    var importance: UIColor = .red
     
-    init(id: Int, title:String, conetent: String, lastDate: String, importance: UIColor) {
+    init(id: Int, title:String, content: String, lastDate: String, importance: UIColor) {
         self.id = id
         self.title = title
-        self.conetent = conetent
+        self.content = content
         self.lastDate = lastDate
         self.importance = importance
     }
