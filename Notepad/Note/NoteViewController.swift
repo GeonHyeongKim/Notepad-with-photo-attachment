@@ -133,7 +133,7 @@ class NoteViewController: UIViewController {
         case .write:
             print("write")
         case .trash:
-            print("trash")
+            self.presentDeleteAlert(title: "메모를 삭제 하겠습니까?", message: "")
         case .importance:
             self.dismissKeyboardWhenTouchedAround()
             print("importance")
@@ -167,6 +167,29 @@ class NoteViewController: UIViewController {
         }
     }
     
+    // 권한 설정 알림
+    private func presentAlertForSync(title: String, message: String, isDeleteAcion: Bool = false) {
+        DispatchQueue.main.sync {
+            let myAlert = UIAlertController(title: title, message: message, preferredStyle: .alert)
+            let okAction = UIAlertAction(title: "OK", style: .default, handler: nil)
+            myAlert.addAction(okAction)
+            self.present(myAlert, animated:true, completion:nil)
+        }
+    }
+    
+    private func presentDeleteAlert(title: String, message: String) {
+        let myAlert = UIAlertController(title: title, message: message, preferredStyle: .alert)
+        
+        // delete button을 눌렀을 경우 - ok 버튼을 눌르면 삭제
+        let okAction = UIAlertAction(title: "OK", style: .destructive) { (action) in
+            self.deleteNote(noteId: self.note.id)
+        }
+        let cancelAction = UIAlertAction(title: "cancle", style: .cancel, handler: nil)
+        myAlert.addAction(cancelAction)
+        myAlert.addAction(okAction)
+        self.present(myAlert, animated:true, completion:nil)
+    }
+    
     // Edit 버튼에 대한 각각의 Action
     @IBAction func touchPageMenuButton(_ sender: UIButton) {
         let pageIndex = sender.tag
@@ -177,12 +200,17 @@ class NoteViewController: UIViewController {
     @IBAction func finishNote(_ sender: Any){
         if self.btnNavtionRight.title == "저장" {
             if self.txtTitle.text != nil {
-                dataCenter.noteList[0].title = self.txtTitle.text!
             }
             self.navigationController?.popViewController(animated: true)
         } else { // 완료
             self.dismissKeyboardWhenTouchedAround()
         }
+    }
+    
+    // MARK: - Trash
+    private func deleteNote(noteId: Int){
+        db.deleteByID(id: noteId)
+        self.navigationController?.popViewController(animated: true)
     }
     
     // MARK: - Camera
@@ -222,7 +250,9 @@ class NoteViewController: UIViewController {
                     self.performSegue(withIdentifier: "showPhotoLibrary", sender: nil)
                 }
             case .denied, .restricted:
-                self.alertPhotoLibrary()
+                let title = "사진 보관함에 접근 불가"
+                let message = "사진 보관함에 접근할 수 있도록, 앱 개인 정보 설정으로 이동하여 접근 허용해 주세요."
+                self.presentAlertForSync(title: title, message: message)
             case .notDetermined:
                 PHPhotoLibrary.requestAuthorization() { status in
                     guard status == .authorized else { return }
@@ -233,16 +263,7 @@ class NoteViewController: UIViewController {
             }
         }
     }
-    
-    // 권한 설정 알림
-    private func alertPhotoLibrary() {
-        DispatchQueue.main.sync {
-            let myAlert = UIAlertController(title: "사진 보관함에 접근 불가", message: "사진 보관함에 접근할 수 있도록, 앱 개인 정보 설정으로 이동하여 접근 허용해 주세요.", preferredStyle: .alert)
-            let okAction = UIAlertAction(title: "OK", style: .default, handler: nil)
-            myAlert.addAction(okAction)
-            self.present(myAlert, animated:true, completion:nil)
-        }
-    }
+
 }
 
 // MARK: - NoteViewControllerDelegate
