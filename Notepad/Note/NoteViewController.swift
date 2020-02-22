@@ -263,7 +263,17 @@ class NoteViewController: UIViewController {
             }
         }
     }
+    
+    // MARK: - New Note
+    private func saveNote() {
 
+    }
+    
+    private func clearText() {
+        self.txtTitle.text = ""
+        self.txtContents.text = "내용 입력"
+        self.txtContents.textColor = UIColor.lightGray
+    }
 }
 
 // MARK: - NoteViewControllerDelegate
