@@ -208,15 +208,16 @@ class NoteViewController: UIViewController {
         }
     }
     
-    // 권한 설정 알림
-    private func presentAlertForSync(title: String, message: String, isDeleteAcion: Bool = false) {
-        DispatchQueue.main.sync {
+    // 권한 설정 알림 - photo library, camera
+    private func presentAlertForAsync(title: String, message: String) {
+        DispatchQueue.main.async {
             let myAlert = UIAlertController(title: title, message: message, preferredStyle: .alert)
             let settingAction = UIAlertAction(title: "설정", style: .cancel){ (action) in // 다시 설정에서 허용할 수 있도록
                 let settingsUrl = NSURL(string:UIApplication.openSettingsURLString)
                 if let url = settingsUrl {
                     UIApplication.shared.open(url as URL, options: [:], completionHandler: nil)
                 }
+                
             }
             let okAction = UIAlertAction(title: "확인", style: .default, handler: nil)
             myAlert.addAction(settingAction)
@@ -224,6 +225,7 @@ class NoteViewController: UIViewController {
             self.present(myAlert, animated:true, completion:nil)
         }
     }
+    
     
     private func presentDeleteAlert(title: String, message: String) {
         let myAlert = UIAlertController(title: title, message: message, preferredStyle: .alert)
@@ -335,7 +337,7 @@ class NoteViewController: UIViewController {
         })
         let newPhotoAction = UIAlertAction(title: "새로운 촬영", style: .default, handler: {
             (alert: UIAlertAction!) -> Void in
-            self.openCamera()
+            self.checkCameraAuthorizationStatus()
         })
         let linkAction = UIAlertAction(title: "외부 링크 이미지", style: .default, handler: {
             (alert: UIAlertAction!) -> Void in
@@ -374,7 +376,7 @@ class NoteViewController: UIViewController {
             case .denied, .restricted:
                 let title = "사진 보관함에 접근 불가"
                 let message = "사진 보관함에 접근할 수 있도록, 앱 개인 정보 설정으로 이동하여 접근 허용해 주세요."
-                self.presentAlertForSync(title: title, message: message)
+                self.presentAlertForAsync(title: title, message: message)
             case .notDetermined:
                 PHPhotoLibrary.requestAuthorization() { status in
                     guard status == .authorized else { return }
@@ -385,6 +387,32 @@ class NoteViewController: UIViewController {
             }
         }
     }
+    
+    // camera 권한 확인
+    private func checkCameraAuthorizationStatus(){
+        let authorizationStatus = AVCaptureDevice.authorizationStatus(for: .video)
+        
+        switch authorizationStatus {
+        case .authorized:
+            DispatchQueue.main.async { () -> Void in // Tread 처리
+                self.openCamera()
+            }
+        case .denied, .restricted:
+            let title = "카메라에 접근 불가"
+            let message = "카메라에 접근할 수 있도록, 앱 개인 정보 설정으로 이동하여 접근 허용해 주세요."
+            self.presentAlertForAsync(title: title, message: message)
+        case .notDetermined:
+            AVCaptureDevice.requestAccess(for: .video) { granted in
+                if granted {
+                    self.openCamera()
+                }
+            }
+        @unknown default:
+            print("Camera Authorization Status에서 에러발생")
+        }
+    }
+    
+    
     
     // MARK: - New Note
     private func newNote() {
@@ -440,8 +468,9 @@ extension NoteViewController: UIImagePickerControllerDelegate, UINavigationContr
             return
         }
 
-        // print out the image size as a test
-        print(image.size)
+        // Camera로 찍은 image 저장
+        self.selectedPhotos = Set<UIImage>()
+        self.selectedPhotos.insert(image)
     }
 }
 // MARK: - NoteViewControllerDelegate
@@ -482,10 +511,6 @@ extension NoteViewController: UITextViewDelegate {
         } else {
             self.note.content = txtContents.text
         }
-    }
-    
-    func textView(_ textView: UITextView, shouldChangeTextIn range: NSRange, replacementText text: String) -> Bool {
-        return true
     }
     
     // UITextView PlaceHolder 설정
