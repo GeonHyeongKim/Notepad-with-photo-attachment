@@ -113,6 +113,7 @@ class DBHelper
         sqlite3_finalize(insertStatement)
     }
     
+    // note
     func update(id: Int, title:String, content: String, lastDate: String, importance: UIColor, background: UIColor) {
         let updateStatementString = "UPDATE note SET title = '\(title)', content = '\(content)', lastDate = '\(lastDate)', importance = '\(String(describing: importance.toHex!))', background = '\(String(describing: background.toHex!))' WHERE id = '\(id)';"
 
@@ -129,6 +130,7 @@ class DBHelper
         sqlite3_finalize(updateStatement)
     }
     
+    // note
     func read() -> [NoteModel] {
         let queryStatementString = "SELECT * FROM note ORDER BY id DESC;"
         var queryStatement: OpaquePointer? = nil
@@ -154,6 +156,7 @@ class DBHelper
         return noteModels
     }
     
+    // note
     func readLast() -> NoteModel {
         let queryStatementString = "SELECT * FROM (SELECT * FROM note ORDER BY id DESC) LIMIT 1"
         var queryStatement: OpaquePointer? = nil
@@ -174,6 +177,27 @@ class DBHelper
         }
         sqlite3_finalize(queryStatement)
         return noteModels.first!
+    }
+    
+    func readFirstThumb(id: Int) -> ImageModel? {
+        let queryStatementString = "SELECT * FROM image WHERE note_id = '\(id)' ORDER BY id ASC LIMIT 1"
+        var queryStatement: OpaquePointer? = nil
+        var imageModels : [ImageModel] = []
+        if sqlite3_prepare_v2(db, queryStatementString, -1, &queryStatement, nil) == SQLITE_OK {
+            while sqlite3_step(queryStatement) == SQLITE_ROW {
+                let id = sqlite3_column_int(queryStatement, 0)
+                let note_id = sqlite3_column_int(queryStatement, 1)
+                let photo = String(describing: String(cString: sqlite3_column_text(queryStatement, 2)))
+
+                let dataDecoded:NSData = NSData(base64Encoded: photo, options: NSData.Base64DecodingOptions(rawValue: 0))!
+
+                imageModels.append(ImageModel(id: Int(id), note_id: Int(note_id), photo: UIImage(data: dataDecoded as Data)!))
+            }
+        } else {
+            print("SELECT statement could not be prepared")
+        }
+        sqlite3_finalize(queryStatement)
+        return imageModels.first
     }
     
     

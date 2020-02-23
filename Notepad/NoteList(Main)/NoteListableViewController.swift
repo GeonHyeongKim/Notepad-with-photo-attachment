@@ -82,6 +82,10 @@ class NoteListableViewController: UITableViewController {
         cell.lblLastModifiedDate.text = note.lastDate
         cell.impormationView.backgroundColor = note.importance
         
+        if db.readFirstThumb(id: note.id) != nil {
+            cell.ivThumb.image = db.readFirstThumb(id: note.id)?.photo
+        }
+        
         return cell
     }
     

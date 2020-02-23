@@ -9,6 +9,7 @@
 import UIKit
 
 class NoteListTableViewCell: UITableViewCell {
+    @IBOutlet weak var ivThumb: UIImageView!
     @IBOutlet weak var lblTitle: UILabel!
     @IBOutlet weak var lblContents: UILabel!
     @IBOutlet weak var lblLastModifiedDate: UILabel!

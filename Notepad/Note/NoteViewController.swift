@@ -95,11 +95,13 @@ class NoteViewController: UIViewController {
 
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(true)
+        reload(status: .normal)
         guard let selectedPhotos = selectedPhotos else {
             return
         }
         
         print(selectedPhotos)
+        self.attachImage(photo: selectedPhotos)
     }
     
     override func viewWillDisappear(_ animated: Bool) {
@@ -264,7 +266,13 @@ class NoteViewController: UIViewController {
         
         //키보드 높이 가져오기 위해
         let keyboardFrame = notiInfo[UIResponder.keyboardFrameEndUserInfoKey] as! CGRect
-        let height = keyboardFrame.size.height - self.view.safeAreaInsets.bottom
+        var height = CGFloat()
+        if #available(iOS 11.0, *) {
+            height = keyboardFrame.size.height - self.view.safeAreaInsets.bottom
+        } else {
+            // Fallback on earlier versions
+            height = keyboardFrame.size.height - self.bottomLayoutGuide.length
+        }
         txtContentsBottomMargin.constant = -height + editorHightConstranints.constant
         let animationDuration = notiInfo[UIResponder.keyboardAnimationDurationUserInfoKey] as! TimeInterval
    
@@ -365,6 +373,64 @@ class NoteViewController: UIViewController {
         present(imgaePicker, animated: true)
     }
     
+    // 외부 이미지 fetch
+    func openURLImage(from url: String) {
+        guard let imageURL = URL(string: url) else { return }
+
+            // just not to cause a deadlock in UI!
+        DispatchQueue.global().async {
+            guard let imageData = try? Data(contentsOf: imageURL) else {
+                return
+            }
+            
+            let image = UIImage(data: imageData)
+            DispatchQueue.main.async {
+                if self.selectedPhotos == nil {
+                    self.selectedPhotos = Set<UIImage>()
+                }
+                
+                self.selectedPhotos.insert(image!)
+            }
+        }
+    }
+    
+    // 이미지 첨부
+    func attachImage(photo: Set<UIImage>) {
+        
+        // start with our text data
+        let font = UIFont.systemFont(ofSize: 26)
+        let attributes: [NSAttributedString.Key: Any] = [
+            .font: font,
+            .foregroundColor: UIColor.orange
+            ]
+        let attributedString = NSMutableAttributedString(string: "before after", attributes: attributes)
+        let textAttachment = NSTextAttachment()
+        textAttachment.image = photo.first
+        
+        let imageSize = textAttachment.image!.size.width;
+        var frameSize = self.view.frame.size.width - 100;
+        let topBarHeight = UIApplication.shared.statusBarFrame.size.height +
+            (self.navigationController?.navigationBar.frame.height ?? 0.0)
+        let height = self.view.frame.size.height - topBarHeight - 100;
+        if(height < frameSize) {
+            frameSize = height;
+        }
+        let scaleFactor = imageSize / frameSize;
+        
+        // scale the image down
+        textAttachment.image = UIImage(cgImage: textAttachment.image!.cgImage!, scale: scaleFactor, orientation: .up)
+        
+        // 이미지에서 속성 문자열을 생성하여 추가
+        let attrStringWithImage = NSAttributedString(attachment: textAttachment)
+        attributedString.append(attrStringWithImage)
+        attributedString.append(attrStringWithImage)
+        attributedString.append(NSAttributedString(string: "\nTHE END!!!", attributes: attributes))
+//        attributedString.replaceCharacters(in: NSMakeRange(4, 1), with: attrStringWithImage)
+        
+        txtContents.attributedText = attributedString;
+        
+    }
+    
     // photo library 권한 확인
     private func checkPhotoLibraryAuthorizationStatus(){
         PHPhotoLibrary.requestAuthorization { (status) in
@@ -431,7 +497,15 @@ class NoteViewController: UIViewController {
         if note.content == "" || note.content == "내용 입력" { // 내용이 없을 경우
             note.content = "내용 없음"
         }
+        // note 저장
         db.update(id: note.id, title: note.title, content: note.content, lastDate: currentDate(), importance: colorList[currentImportanceColorIndex], background: colorList[currentBgColorIndex])
+        
+        self.savePhotos(noteId: note.id)
+    }
+    
+    // Image Table에 photo 저장
+    private func savePhotos(noteId: Int) {
+        
     }
     
     private func clearNote() {
@@ -469,15 +543,26 @@ extension NoteViewController: UIImagePickerControllerDelegate, UINavigationContr
         }
 
         // Camera로 찍은 image 저장
-        self.selectedPhotos = Set<UIImage>()
+        if selectedPhotos == nil {
+            self.selectedPhotos = Set<UIImage>()
+        }
+        
         self.selectedPhotos.insert(image)
+
+        
     }
 }
 // MARK: - NoteViewControllerDelegate
 extension NoteViewController: SendPhotoDataDelegate {
     
     func sendPhoto(photos: Set<UIImage>) {
-        self.selectedPhotos = photos
+        if selectedPhotos == nil {
+            self.selectedPhotos = photos
+        } else { // photo Library에서 기존에 삽입
+            for photo in photos {
+                self.selectedPhotos.insert(photo)
+            }
+        }
     }
 }
 // MARK: - UITextFieldDelegate
