@@ -122,11 +122,13 @@ class NoteViewController: UIViewController {
     
     // 저장된 노트 정보 입력
     func setupNote(){
-        if note != nil {
-            reload(status: .normal)
-            self.importanceView.backgroundColor = note.importance
-            self.txtTitle.text = note.title
-            self.txtContents.text = note.content
+        reload(status: .normal)
+        self.importanceView.backgroundColor = note.importance
+        self.txtTitle.text = note.title
+        self.txtContents.text = note.content
+        
+        if note.content == "내용 입력"{
+            self.txtContents.textColor = UIColor.lightGray
         }
     }
     
@@ -365,8 +367,12 @@ class NoteViewController: UIViewController {
     
     // DB에 Note 정보 업데이트
     private func saveNote() {
-        if note.title == "" { // 제목이 없을 경우, 내용을 제목으로 대체
-            note.title = note.content
+        if note.title == "" { // 제목이 없을 경우
+            note.title = "제목 없음"
+        }
+        
+        if note.content == "" || note.content == "내용 입력" { // 내용이 없을 경우
+            note.content = "내용 없음"
         }
         db.update(id: note.id, title: note.title, content: note.content, lastDate: currentDate(), importance: colorList[currentImportanceColorIndex], background: colorList[currentBgColorIndex])
     }
