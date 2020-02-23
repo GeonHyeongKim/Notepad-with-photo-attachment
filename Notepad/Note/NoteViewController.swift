@@ -212,7 +212,14 @@ class NoteViewController: UIViewController {
     private func presentAlertForSync(title: String, message: String, isDeleteAcion: Bool = false) {
         DispatchQueue.main.sync {
             let myAlert = UIAlertController(title: title, message: message, preferredStyle: .alert)
-            let okAction = UIAlertAction(title: "OK", style: .default, handler: nil)
+            let settingAction = UIAlertAction(title: "설정", style: .cancel){ (action) in // 다시 설정에서 허용할 수 있도록
+                let settingsUrl = NSURL(string:UIApplication.openSettingsURLString)
+                if let url = settingsUrl {
+                    UIApplication.shared.open(url as URL, options: [:], completionHandler: nil)
+                }
+            }
+            let okAction = UIAlertAction(title: "확인", style: .default, handler: nil)
+            myAlert.addAction(settingAction)
             myAlert.addAction(okAction)
             self.present(myAlert, animated:true, completion:nil)
         }
@@ -321,13 +328,14 @@ class NoteViewController: UIViewController {
     func openPhotoLibrary(){
         let optionMenuAlert = UIAlertController(title: nil, message: nil, preferredStyle: .actionSheet)
         
-        //옵션 초기화
+        // 옵션 초기화
         let photoLibraryAction = UIAlertAction(title: "사진 보관함", style: .default, handler: {
             (alert: UIAlertAction!) -> Void in
             self.checkPhotoLibraryAuthorizationStatus()
         })
         let newPhotoAction = UIAlertAction(title: "새로운 촬영", style: .default, handler: {
             (alert: UIAlertAction!) -> Void in
+            self.openCamera()
         })
         let linkAction = UIAlertAction(title: "외부 링크 이미지", style: .default, handler: {
             (alert: UIAlertAction!) -> Void in
@@ -344,6 +352,15 @@ class NoteViewController: UIViewController {
         
         //show
         self.present(optionMenuAlert, animated: true)
+    }
+    
+    // 새로운 촬영
+    func openCamera(){
+        let imgaePicker = UIImagePickerController()
+        imgaePicker.sourceType = .camera
+        imgaePicker.allowsEditing = true
+        imgaePicker.delegate = self
+        present(imgaePicker, animated: true)
     }
     
     // photo library 권한 확인
@@ -413,7 +430,20 @@ class NoteViewController: UIViewController {
         self.importanceView.backgroundColor =  self.colorList[currentImportanceColorIndex]
     }
 }
+// MARK: - NoteViewControllerDelegate
+extension NoteViewController: UIImagePickerControllerDelegate, UINavigationControllerDelegate {
+    func imagePickerController(_ picker: UIImagePickerController, didFinishPickingMediaWithInfo info: [UIImagePickerController.InfoKey : Any]) {
+        picker.dismiss(animated: true)
 
+        guard let image = info[.editedImage] as? UIImage else {
+            print("No image found")
+            return
+        }
+
+        // print out the image size as a test
+        print(image.size)
+    }
+}
 // MARK: - NoteViewControllerDelegate
 extension NoteViewController: SendPhotoDataDelegate {
     
