@@ -205,7 +205,7 @@ class NoteViewController: UIViewController {
         case .write:
             print("write")
         case .trash:
-            self.presentDeleteAlert(title: "메모를 삭제 하겠습니까?", message: "")
+            self.presentAlert(title: "메모를 삭제 하겠습니까?", message: "", isDelete: true)
         case .background:
             self.dismissKeyboardWhenTouchedAround()
         case .camera:
@@ -263,12 +263,26 @@ class NoteViewController: UIViewController {
     }
     
     
-    private func presentDeleteAlert(title: String, message: String) {
+    private func presentAlert(title: String, message: String, isDelete: Bool = false, placeHolderMessage: String = "") {
         let myAlert = UIAlertController(title: title, message: message, preferredStyle: .alert)
-        
+        if !isDelete {
+            if placeHolderMessage == "" {
+                myAlert.addTextField(configurationHandler: { (textField) in
+                    textField.placeholder = "URL 입력창"
+                })
+            } else {
+                myAlert.addTextField(configurationHandler: { (textField) in
+                    textField.placeholder = placeHolderMessage // 입력된 placeHolder
+                })
+            }
+        }
         // delete button을 눌렀을 경우 - ok 버튼을 눌르면 삭제
         let okAction = UIAlertAction(title: "OK", style: .destructive) { (action) in
-            self.deleteNote(noteId: self.note.id)
+            if isDelete { // deleteAlert
+                self.deleteNote(noteId: self.note.id)
+            } else { // URLAlert
+                self.openURLImage(url: (myAlert.textFields?.first!.text)!)
+            }
         }
         let cancelAction = UIAlertAction(title: "cancle", style: .cancel) {(action) in
             self.reload(status: .normal)
@@ -277,6 +291,16 @@ class NoteViewController: UIViewController {
         myAlert.addAction(okAction)
         self.present(myAlert, animated:true, completion:nil)
     }
+    
+    private func presentErrorAlert(title: String, message: String) {
+        let myAlert = UIAlertController(title: title, message: message, preferredStyle: .alert)
+        
+        let okAction = UIAlertAction(title: "OK", style: .default, handler: nil)
+
+        myAlert.addAction(okAction)
+        self.present(myAlert, animated:true, completion:nil)
+    }
+    
     
     // Edit 버튼에 대한 각각의 Action
     @IBAction func touchPageMenuButton(_ sender: UIButton) {
@@ -383,6 +407,7 @@ class NoteViewController: UIViewController {
         })
         let linkAction = UIAlertAction(title: "외부 링크 이미지", style: .default, handler: {
             (alert: UIAlertAction!) -> Void in
+            self.presentAlert(title: "URL 입력", message: "")
         })
         let cancelAction = UIAlertAction(title: "취소", style: .cancel, handler: {
             (alert: UIAlertAction!) -> Void in
@@ -408,25 +433,49 @@ class NoteViewController: UIViewController {
     }
     
     // 외부 이미지 fetch
-    func openURLImage(from url: String) {
-        guard let imageURL = URL(string: url) else { return }
-
-            // just not to cause a deadlock in UI!
-        DispatchQueue.global().async {
-            guard let imageData = try? Data(contentsOf: imageURL) else {
-                return
-            }
-            
-            let image = UIImage(data: imageData)
-            DispatchQueue.main.async {
-                if self.selectedPhotos == nil {
-                    self.selectedPhotos = [UIImage]()
+    func openURLImage(url: String) {
+        fetchImage(from: url) { (imageData) in
+            if let data = imageData {
+                // referenced imageView from main thread
+                // as iOS SDK warns not to use images from
+                // a background thread
+                DispatchQueue.main.async {
+                    if self.selectedPhotos == nil {
+                        self.selectedPhotos = [UIImage]()
+                    }
+                    
+                    self.selectedPhotos.append(UIImage(data: data)!)
+                    self.cvPhoto.reloadData()
                 }
-                
-                self.selectedPhotos.append(image!)
+            } else {
+                // show as an alert if you want to
+                DispatchQueue.main.async{
+                    self.presentErrorAlert(title: "URL 찾기 실패", message: "URL 주소에서 이미지를 찾지 못했습니다.")
+                }
             }
         }
     }
+    
+    // 외부 이미지 fetch
+    func fetchImage(from urlString: String, completionHandler: @escaping (_ data: Data?) -> ()) {
+        let session = URLSession.shared
+            
+        guard let url = URL(string: urlString) else {
+            return self.presentAlert(title: "URL 입력", message: "", placeHolderMessage: "url을 공백이였습니다. 다시 입력 해주세요")
+        }
+        
+        let dataTask = session.dataTask(with: url) { (data, response, error) in
+            if error != nil {
+                print("Error fetching the image! 😢")
+                completionHandler(nil)
+            } else {
+                completionHandler(data)
+            }
+        }
+            
+        dataTask.resume()
+    }
+    
     
     // 이미지 첨부
     func attachImage(photo: [UIImage]) {
