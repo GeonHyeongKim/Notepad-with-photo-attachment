@@ -9,7 +9,7 @@
 import UIKit
 
 var notes:[NoteModel] = []
-
+var images:[ImageModel] = []
 class NoteListableViewController: UITableViewController {
         
     override func viewDidLoad() {
@@ -22,6 +22,7 @@ class NoteListableViewController: UITableViewController {
     
     override func viewWillAppear(_ animated: Bool) {
         notes = db.read()
+        images = db.readThumb()
         self.tableView.reloadData()
     }
     
@@ -84,6 +85,8 @@ class NoteListableViewController: UITableViewController {
         
         if db.readFirstThumb(id: note.id) != nil {
             cell.ivThumb.image = db.readFirstThumb(id: note.id)?.photo
+        } else {
+            cell.ivThumb.image = UIImage(named: "thumb_icon.png")
         }
         
         return cell

@@ -65,7 +65,7 @@ class DBHelper
     
     /// create image table - 외래키로 note의 id 이며, on delete cascade 설정
     func createImageTable() {
-        let createTableString = "CREATE TABLE IF NOT EXISTS image(Id INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT, note_id INTEGER, data TEXT, CONSTRAINT fk_attach FOREIGN KEY (note_id) REFERENCES note(id) ON DELETE CASCADE);"
+        let createTableString = "CREATE TABLE IF NOT EXISTS image(Id INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT, note_id INTEGER, photo TEXT, CONSTRAINT fk_attach FOREIGN KEY (note_id) REFERENCES note(id) ON DELETE CASCADE);"
         var createTableStatement: OpaquePointer? = nil
         if sqlite3_prepare_v2(db, createTableString, -1, &createTableStatement, nil) == SQLITE_OK
         {
@@ -101,6 +101,31 @@ class DBHelper
             sqlite3_bind_text(insertStatement, 4, (lastDate as NSString).utf8String, -1, nil)
             sqlite3_bind_text(insertStatement, 5, (importance.toHex! as NSString).utf8String, -1, nil)
             sqlite3_bind_text(insertStatement, 6, (background.toHex! as NSString).utf8String, -1, nil)
+            
+            if sqlite3_step(insertStatement) == SQLITE_DONE {
+                print("Successfully inserted row.")
+            } else {
+                print("Could not insert row.")
+            }
+        } else {
+            print("INSERT statement could not be prepared.")
+        }
+        sqlite3_finalize(insertStatement)
+    }
+    
+    func insertImage(id: Int, note_id: Int, photo: UIImage)
+    {
+        let insertStatementString = "INSERT INTO image (id, note_id, photo) VALUES (?, ?, ?);"
+        var insertStatement: OpaquePointer? = nil
+        if sqlite3_prepare_v2(db, insertStatementString, -1, &insertStatement, nil) == SQLITE_OK {
+            //            sqlite3_bind_int(insertStatement, 1, Int32(id)) --> 자동입력이라 무시가능
+            sqlite3_bind_int(insertStatement, 2, Int32(note_id))
+            
+            // encode
+            let imageData:NSData = photo.pngData()! as NSData
+            let strBase64 = imageData.base64EncodedString(options: .lineLength64Characters)
+            
+            sqlite3_bind_text(insertStatement, 3, (strBase64 as NSString).utf8String, -1, nil)
             
             if sqlite3_step(insertStatement) == SQLITE_DONE {
                 print("Successfully inserted row.")
@@ -179,6 +204,7 @@ class DBHelper
         return noteModels.first!
     }
     
+    // image
     func readFirstThumb(id: Int) -> ImageModel? {
         let queryStatementString = "SELECT * FROM image WHERE note_id = '\(id)' ORDER BY id ASC LIMIT 1"
         var queryStatement: OpaquePointer? = nil
@@ -189,7 +215,8 @@ class DBHelper
                 let note_id = sqlite3_column_int(queryStatement, 1)
                 let photo = String(describing: String(cString: sqlite3_column_text(queryStatement, 2)))
 
-                let dataDecoded:NSData = NSData(base64Encoded: photo, options: NSData.Base64DecodingOptions(rawValue: 0))!
+                // Decode
+                let dataDecoded:NSData = NSData(base64Encoded: photo, options: .ignoreUnknownCharacters)!
 
                 imageModels.append(ImageModel(id: Int(id), note_id: Int(note_id), photo: UIImage(data: dataDecoded as Data)!))
             }
@@ -200,8 +227,31 @@ class DBHelper
         return imageModels.first
     }
     
+    func readThumb() -> [ImageModel] {
+        let queryStatementString = "SELECT * FROM image W"
+        var queryStatement: OpaquePointer? = nil
+        var imageModels : [ImageModel] = []
+        if sqlite3_prepare_v2(db, queryStatementString, -1, &queryStatement, nil) == SQLITE_OK {
+            while sqlite3_step(queryStatement) == SQLITE_ROW {
+                let id = sqlite3_column_int(queryStatement, 0)
+                let note_id = sqlite3_column_int(queryStatement, 1)
+                let photo = String(describing: String(cString: sqlite3_column_text(queryStatement, 2)))
+
+                let dataDecoded:NSData = NSData(base64Encoded: photo, options: .ignoreUnknownCharacters)!
+
+                imageModels.append(ImageModel(id: Int(id), note_id: Int(note_id), photo: UIImage(data: dataDecoded as Data)!))
+                print("\(id) | \(note_id) ")
+
+            }
+        } else {
+            print("SELECT statement could not be prepared")
+        }
+        
+        sqlite3_finalize(queryStatement)
+        return imageModels
+    }
     
-    
+    // note
     func deleteByID(id:Int) {
         let deleteStatementStirng = "DELETE FROM note WHERE Id = ?;"
         var deleteStatement: OpaquePointer? = nil
@@ -218,4 +268,20 @@ class DBHelper
         sqlite3_finalize(deleteStatement)
     }
     
+    // image
+    func deleteImagesByID(note_id:Int) {
+        let deleteStatementStirng = "DELETE FROM image WHERE note_id = ?;"
+        var deleteStatement: OpaquePointer? = nil
+        if sqlite3_prepare_v2(db, deleteStatementStirng, -1, &deleteStatement, nil) == SQLITE_OK {
+            sqlite3_bind_int(deleteStatement, 1, Int32(note_id))
+            if sqlite3_step(deleteStatement) == SQLITE_DONE {
+                print("Successfully deleted row.")
+            } else {
+                print("Could not delete row.")
+            }
+        } else {
+            print("DELETE statement could not be prepared")
+        }
+        sqlite3_finalize(deleteStatement)
+    }
 }

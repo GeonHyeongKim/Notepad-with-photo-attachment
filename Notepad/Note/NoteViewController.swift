@@ -125,8 +125,14 @@ class NoteViewController: UIViewController {
     func setupNote(){
         reload(status: .normal)
         self.importanceView.backgroundColor = note.importance
+        if colorList.contains(note.importance){
+            self.currentImportanceColorIndex = colorList.firstIndex(of: note.importance)!
+        }
         self.txtContents.text = note.content
         self.backgroundView.backgroundColor = note.background
+        if colorList.contains(note.background){
+            self.currentBgColorIndex = colorList.firstIndex(of: note.background)!
+        }
         
         if note.title == "제목 없음"{
             self.txtTitle.text = ""
@@ -484,7 +490,7 @@ class NoteViewController: UIViewController {
     private func newNote() {
         self.saveNote()
         self.clearNote()
-        db.insertNote(id: 0, title: note.title, content: note.content, lastDate: currentDate(), importance: note.importance, background: note.background)
+        db.insertNote(id: -1, title: note.title, content: note.content, lastDate: currentDate(), importance: note.importance, background: note.background)
         self.note.id = db.readLast().id
     }
     
@@ -505,7 +511,15 @@ class NoteViewController: UIViewController {
     
     // Image Table에 photo 저장
     private func savePhotos(noteId: Int) {
+        guard let selectedPhotos = selectedPhotos else {
+            return
+        }
+
+        db.deleteImagesByID(note_id: noteId) // note_id에 관련된 모든 사진 제거
         
+        for photo in selectedPhotos {
+            db.insertImage(id: -1, note_id: noteId, photo: photo)
+        }
     }
     
     private func clearNote() {
