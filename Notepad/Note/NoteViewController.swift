@@ -24,8 +24,7 @@ class NoteViewController: UIViewController {
     @IBOutlet weak var btnNavtionRight: UIBarButtonItem!
     
     // Keyboard
-    var keyboardShown:Bool = false // 키보드 상태 확인
-    var originY:CGFloat? // 오브젝트의 기본 위치
+    @IBOutlet weak var txtContentsBottomMargin: NSLayoutConstraint!
     
     // Note
     @IBOutlet weak var importanceView: UIView!
@@ -65,7 +64,7 @@ class NoteViewController: UIViewController {
     @IBOutlet var backgroundView: UIView!
     @IBOutlet weak var selectBackgroundView: UIView!
     @IBOutlet var bgColorEditView: UIView!
-    var currentBgColorIndex: Int = 0 // 현재 중요도 색상
+    var currentBgColorIndex: Int = 1 // 현재 중요도 색상
     let colorList: [UIColor] = [
         UIColor(hexString: "#FFFFFF"), UIColor(hexString: "#000000"), UIColor(hexString: "#489CFF"), UIColor(hexString: "#53C14B"), UIColor(hexString: "#FACE15"),
         UIColor(hexString: "#FFBB00"), UIColor(hexString: "#FF5E00"), UIColor(hexString: "#FF007F"), UIColor(hexString: "#8041D9" as String)
@@ -124,9 +123,14 @@ class NoteViewController: UIViewController {
     func setupNote(){
         reload(status: .normal)
         self.importanceView.backgroundColor = note.importance
-        self.txtTitle.text = note.title
         self.txtContents.text = note.content
         self.backgroundView.backgroundColor = note.background
+        
+        if note.title == "제목 없음"{
+            self.txtTitle.text = ""
+        } else {
+            self.txtTitle.text = note.title
+        }
         
         if note.content == "내용 입력"{
             self.txtContents.textColor = UIColor.lightGray
@@ -134,7 +138,7 @@ class NoteViewController: UIViewController {
     }
     
     func notification() {
-
+        registerForKeyboardNotifications()
     }
         
     private func reload(status: NoteEditViewModel.Status) {
@@ -221,7 +225,9 @@ class NoteViewController: UIViewController {
         let okAction = UIAlertAction(title: "OK", style: .destructive) { (action) in
             self.deleteNote(noteId: self.note.id)
         }
-        let cancelAction = UIAlertAction(title: "cancle", style: .cancel, handler: nil)
+        let cancelAction = UIAlertAction(title: "cancle", style: .cancel) {(action) in
+            self.reload(status: .normal)
+        }
         myAlert.addAction(cancelAction)
         myAlert.addAction(okAction)
         self.present(myAlert, animated:true, completion:nil)
@@ -244,37 +250,41 @@ class NoteViewController: UIViewController {
         }
     }
     // MARK: - keyboard 설정
-    @objc func keyboardWillShow(_ notification: Notification) {
-        if let keyboardFrame: NSValue = notification.userInfo?[UIResponder.keyboardFrameEndUserInfoKey] as? NSValue {
-            let keybaordRectangle = keyboardFrame.cgRectValue
-            let keyboardHeight = keybaordRectangle.height
-            self.view.frame.origin.y -= keyboardHeight
-            
+    @objc func keyboardWillShow(_ noti: Notification) {
+        let notiInfo = noti.userInfo!
+        
+        //키보드 높이 가져오기 위해
+        let keyboardFrame = notiInfo[UIResponder.keyboardFrameEndUserInfoKey] as! CGRect
+        let height = keyboardFrame.size.height - self.view.safeAreaInsets.bottom
+        txtContentsBottomMargin.constant = -height + editorHightConstranints.constant
+        let animationDuration = notiInfo[UIResponder.keyboardAnimationDurationUserInfoKey] as! TimeInterval
+   
+        // 애니메이션 효과를 키보드 애니메이션 시간과 동일하게
+        UIView.animate(withDuration: animationDuration) {
+            self.txtContentsBottomMargin.constant = -height + self.editorHightConstranints.constant
+            self.view.layoutIfNeeded()
         }
-//
-//            UIView.animate(withDuration: 0.33, animations: { () -> Void in
-//                if originY == nil {
-//                    originY = label.frame.origin.y
-//                }
-//                label.frame.origin.y = originY - keyboardSize.height
-//                return true
-//            }, completion: {
-//                keyboardShown = true
-//                return Void
-//            })
     }
     
-    @objc private func keyboardWillHide(_ notification: Notification) {
-        if let keyboardFrame: NSValue = notification.userInfo?[UIResponder.keyboardFrameEndUserInfoKey] as? NSValue {
-            let keybaordRectangle = keyboardFrame.cgRectValue
-            let keyboardHeight = keybaordRectangle.height
-            self.view.frame.origin.y += keyboardHeight
+    @objc private func keyboardWillHide(_ noti: Notification) {
+        let notiInfo = noti.userInfo!
+        
+        let animationDuration = notiInfo[UIResponder.keyboardAnimationDurationUserInfoKey] as! TimeInterval
+        
+        // 애니메이션 효과를 키보드 애니메이션 시간과 동일하게
+        UIView.animate(withDuration: animationDuration) {
+            self.txtContentsBottomMargin.constant = 0
+            self.view.layoutIfNeeded()
         }
     }
     
     func textFieldShouldReturn(_ textField: UITextField) -> Bool {
         dismissKeyboardWhenTouchedAround()
         return true
+    }
+    
+    override func touchesBegan(_ touches: Set<UITouch>, with event: UIEvent?) {
+        self.view.endEditing(true)
     }
     
     // Keyboard dismiss
@@ -324,6 +334,7 @@ class NoteViewController: UIViewController {
         })
         let cancelAction = UIAlertAction(title: "취소", style: .cancel, handler: {
             (alert: UIAlertAction!) -> Void in
+            self.reload(status: .normal)
         })
         
         optionMenuAlert.addAction(photoLibraryAction)

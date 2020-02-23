@@ -47,6 +47,8 @@ class NoteEditViewModel {
             isHiddenTextColorView = true
             isHiddenNewNoteView = true
             isHiddenImportanceView = true
+            editorHightConstranint = 50
+            editHightConstranint = 0
             navigationTitle = "메모"
             navigationItemRightTitle = "저장"
             

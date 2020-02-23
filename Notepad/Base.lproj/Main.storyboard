@@ -225,7 +225,7 @@
                                         </constraints>
                                     </view>
                                     <textView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" text="내용 입력" textAlignment="natural" translatesAutoresizingMaskIntoConstraints="NO" id="92S-sG-7T4">
-                                        <rect key="frame" x="0.0" y="50" width="414" height="485"/>
+                                        <rect key="frame" x="0.0" y="50" width="414" height="493"/>
                                         <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                         <color key="textColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                         <fontDescription key="fontDescription" type="system" pointSize="14"/>
@@ -553,7 +553,7 @@
                                     <constraint firstAttribute="bottom" secondItem="iiH-Ef-wXw" secondAttribute="bottom" id="eUi-cz-v7D"/>
                                     <constraint firstItem="5wB-ve-JGr" firstAttribute="centerX" secondItem="loI-Hs-zMe" secondAttribute="centerX" id="eaE-AC-g9s"/>
                                     <constraint firstItem="92S-sG-7T4" firstAttribute="leading" secondItem="loI-Hs-zMe" secondAttribute="leading" id="oCX-Dg-JbN"/>
-                                    <constraint firstItem="92S-sG-7T4" firstAttribute="bottom" secondItem="iiH-Ef-wXw" secondAttribute="top" id="rhN-pV-8gD"/>
+                                    <constraint firstItem="92S-sG-7T4" firstAttribute="bottom" secondItem="iiH-Ef-wXw" secondAttribute="top" constant="8" symbolic="YES" id="rhN-pV-8gD"/>
                                     <constraint firstItem="iiH-Ef-wXw" firstAttribute="width" secondItem="loI-Hs-zMe" secondAttribute="width" multiplier="1.00242" id="s9u-0c-Me5"/>
                                     <constraint firstAttribute="trailing" secondItem="92S-sG-7T4" secondAttribute="trailing" id="wcH-Kj-vbZ"/>
                                     <constraint firstItem="5wB-ve-JGr" firstAttribute="leading" secondItem="loI-Hs-zMe" secondAttribute="leading" id="zpD-jn-0Py"/>
@@ -591,6 +591,7 @@
                         <outlet property="selectTrashView" destination="Inp-2f-Bxg" id="8ks-tG-4tY"/>
                         <outlet property="textColorEditView" destination="aod-ky-Hi0" id="dqF-g3-qGn"/>
                         <outlet property="txtContents" destination="92S-sG-7T4" id="VMa-XO-yg7"/>
+                        <outlet property="txtContentsBottomMargin" destination="rhN-pV-8gD" id="5oz-4H-Iin"/>
                         <outlet property="txtTitle" destination="Bp9-m3-nKp" id="Qw1-rI-PPr"/>
                         <segue destination="3ma-fr-fXB" kind="show" identifier="showPhotoLibrary" id="cOt-QD-vWQ"/>
                     </connections>
