@@ -126,6 +126,7 @@ class NoteViewController: UIViewController {
         self.importanceView.backgroundColor = note.importance
         self.txtTitle.text = note.title
         self.txtContents.text = note.content
+        self.backgroundView.backgroundColor = note.background
         
         if note.content == "내용 입력"{
             self.txtContents.textColor = UIColor.lightGray
