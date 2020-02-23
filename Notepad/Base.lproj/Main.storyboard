@@ -2081,6 +2081,9 @@
                             <state key="normal" title="삭제">
                                 <color key="titleColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                             </state>
+                            <connections>
+                                <action selector="touchDeleteAttachedPhotoButton:" destination="HoM-Sn-XN5" eventType="touchUpInside" id="eY9-jM-hLR"/>
+                            </connections>
                         </button>
                         <collectionView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" bounces="NO" showsHorizontalScrollIndicator="NO" showsVerticalScrollIndicator="NO" bouncesZoom="NO" dataMode="prototypes" translatesAutoresizingMaskIntoConstraints="NO" id="XRb-OI-yd8" userLabel="Photo Collection View">
                             <rect key="frame" x="0.0" y="52" width="375" height="100"/>

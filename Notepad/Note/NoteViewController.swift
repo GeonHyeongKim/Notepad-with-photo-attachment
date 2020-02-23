@@ -105,7 +105,6 @@ class NoteViewController: UIViewController {
             return
         }
         
-        print(selectedPhotos)
         self.cvPhoto.reloadData()
         reload(status: .camera)
         self.attachImage(photo: selectedPhotos)
@@ -159,6 +158,10 @@ class NoteViewController: UIViewController {
         
         // check attached photo
         guard let attachPhotos = db.readThumb(note_id: note.id) else {
+            return
+        }
+        
+        guard db.readThumb(note_id: note.id)!.count > 0 else {
             return
         }
         
@@ -501,13 +504,23 @@ class NoteViewController: UIViewController {
         case .notDetermined:
             AVCaptureDevice.requestAccess(for: .video) { granted in
                 if granted {
-                    self.openCamera()
+                    DispatchQueue.main.async {
+                        self.openCamera()
+                    }
                 }
             }
         @unknown default:
             print("Camera Authorization Status에서 에러발생")
         }
     }
+    
+    @IBAction func touchDeleteAttachedPhotoButton(_ sender: UIButton) {
+        self.selectedPhotos.remove(at: selectedPhotoIndex)
+        savePhotos(noteId: note.id) // 전체삭제 후 삽입
+        selectedPhotoIndex = -1 // 아무것도 선택하지 않도록 초기화
+        cvPhoto.reloadData()
+    }
+
     
     // MARK: - New Note
     @IBAction func sliderAction(sender: AnyObject) {
