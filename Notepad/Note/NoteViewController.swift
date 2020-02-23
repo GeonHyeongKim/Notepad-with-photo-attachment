@@ -23,6 +23,10 @@ class NoteViewController: UIViewController {
     // Navigation
     @IBOutlet weak var btnNavtionRight: UIBarButtonItem!
     
+    // Keyboard
+    var keyboardShown:Bool = false // 키보드 상태 확인
+    var originY:CGFloat? // 오브젝트의 기본 위치
+    
     // Note
     @IBOutlet weak var importanceView: UIView!
     @IBOutlet weak var txtTitle: UITextField!
@@ -30,6 +34,8 @@ class NoteViewController: UIViewController {
     var note: NoteModel!
     
     // Editor
+    @IBOutlet weak var editorHightConstranints: NSLayoutConstraint!
+    @IBOutlet weak var editHightConstranints: NSLayoutConstraint!
     @IBOutlet weak var editView: UIView!
     var currentEditorIndex: Int = 0 { // button의 tag를 이용
         willSet(newVal) {
@@ -37,13 +43,15 @@ class NoteViewController: UIViewController {
             case 0:
                 reload(status: .trash)
             case 1:
-                reload(status: .importance)
+                reload(status: .background)
             case 2:
                 reload(status: .camera)
             case 3:
                 reload(status: .textColor)
             case 4:
                 reload(status: .newNote)
+            case 5:
+                reload(status: .importance)
             default:
                 reload(status: .write)
             }
@@ -53,18 +61,19 @@ class NoteViewController: UIViewController {
     // Trash
     @IBOutlet weak var selectTrashView: UIView!
     
-    // Importance
-    @IBOutlet weak var selectImportanceView: UIView!
-    @IBOutlet var importanceEditView: UIView!
+    // Background
+    @IBOutlet var backgroundView: UIView!
+    @IBOutlet weak var selectBackgroundView: UIView!
+    @IBOutlet var bgColorEditView: UIView!
+    var currentBgColorIndex: Int = 0 // 현재 중요도 색상
     let colorList: [UIColor] = [
         UIColor(hexString: "#FFFFFF"), UIColor(hexString: "#000000"), UIColor(hexString: "#489CFF"), UIColor(hexString: "#53C14B"), UIColor(hexString: "#FACE15"),
         UIColor(hexString: "#FFBB00"), UIColor(hexString: "#FF5E00"), UIColor(hexString: "#FF007F"), UIColor(hexString: "#8041D9" as String)
     ]
-    var currentImportanceColorIndex: Int = 0 // 현재 중요도 색상
     
     // Camera
     @IBOutlet weak var selectCameraView: UIView!
-    
+    var selectedPhotos: Set<UIImage>!
     
     // TextColor
     @IBOutlet weak var selectTextColorView: UIView!
@@ -73,7 +82,10 @@ class NoteViewController: UIViewController {
     // NewNote
     @IBOutlet weak var selectNewNoteView: UIView!
     
-    var selectedPhotos: Set<UIImage>!
+    // Importance
+    @IBOutlet var importanceEditView: UIView!
+    var currentImportanceColorIndex: Int = 0 // 현재 중요도 색상
+    
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -81,11 +93,7 @@ class NoteViewController: UIViewController {
         
         self.setup()        
     }
-    
-    override func viewDidAppear(_ animated: Bool) {
-        reload(status: .normal)
-    }
-    
+
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(true)
         guard let selectedPhotos = selectedPhotos else {
@@ -95,10 +103,15 @@ class NoteViewController: UIViewController {
         print(selectedPhotos)
     }
     
+    override func viewWillDisappear(_ animated: Bool) {
+      unregisterForKeyboardNotifications()
+    }
+    
     // 초기 설정
     private func setup(){
         self.setupNavigation()
         self.setupNote()
+        self.notification()
     }
     
     // Navigation 설정
@@ -117,6 +130,10 @@ class NoteViewController: UIViewController {
         }
     }
     
+    func notification() {
+
+    }
+        
     private func reload(status: NoteEditViewModel.Status) {
         noteViewModel.reload(status: status)
         
@@ -126,13 +143,15 @@ class NoteViewController: UIViewController {
         
         // select View Hidden
         selectTrashView.isHidden = noteViewModel.isHiddenTrashView
-        selectImportanceView.isHidden = noteViewModel.isHiddenImportanceView
+        selectBackgroundView.isHidden = noteViewModel.isHiddenBackGroundView
         selectCameraView.isHidden = noteViewModel.isHiddenCameraView
         selectTextColorView.isHidden = noteViewModel.isHiddenTextColorView
         selectNewNoteView.isHidden = noteViewModel.isHiddenNewNoteView
-        
+
         // Edit Area View Hidden
         editView.isHidden = noteViewModel.isHiddenEditView
+        editorHightConstranints.constant = CGFloat(noteViewModel.editorHightConstranint)
+        editHightConstranints.constant = CGFloat(noteViewModel.editHightConstranint)
         
         for view in editView.subviews {
             view.removeFromSuperview()
@@ -146,7 +165,7 @@ class NoteViewController: UIViewController {
             print("write")
         case .trash:
             self.presentDeleteAlert(title: "메모를 삭제 하겠습니까?", message: "")
-        case .importance:
+        case .background:
             self.dismissKeyboardWhenTouchedAround()
         case .camera:
             self.openPhotoLibrary()
@@ -154,14 +173,18 @@ class NoteViewController: UIViewController {
             print("textColor")
         case .newNote:
             self.newNote()
+        case .importance:
+            self.dismissKeyboardWhenTouchedAround()
         }
         
         let editContentView: UIView
         switch status {
-        case .importance:
-            editContentView = importanceEditView
+        case .background:
+            editContentView = bgColorEditView
         case .textColor:
             editContentView = textColorEditView
+        case .importance:
+            editContentView = importanceEditView
         default:
             editContentView = UIView()
             editContentView.isHidden = true
@@ -213,8 +236,60 @@ class NoteViewController: UIViewController {
             self.saveNote()
             self.navigationController?.popViewController(animated: true)
         } else { // 완료
+            reload(status: .normal)
             self.dismissKeyboardWhenTouchedAround()
         }
+    }
+    // MARK: - keyboard 설정
+    @objc func keyboardWillShow(_ notification: Notification) {
+        if let keyboardFrame: NSValue = notification.userInfo?[UIResponder.keyboardFrameEndUserInfoKey] as? NSValue {
+            let keybaordRectangle = keyboardFrame.cgRectValue
+            let keyboardHeight = keybaordRectangle.height
+            self.view.frame.origin.y -= keyboardHeight
+            
+        }
+//
+//            UIView.animate(withDuration: 0.33, animations: { () -> Void in
+//                if originY == nil {
+//                    originY = label.frame.origin.y
+//                }
+//                label.frame.origin.y = originY - keyboardSize.height
+//                return true
+//            }, completion: {
+//                keyboardShown = true
+//                return Void
+//            })
+    }
+    
+    @objc private func keyboardWillHide(_ notification: Notification) {
+        if let keyboardFrame: NSValue = notification.userInfo?[UIResponder.keyboardFrameEndUserInfoKey] as? NSValue {
+            let keybaordRectangle = keyboardFrame.cgRectValue
+            let keyboardHeight = keybaordRectangle.height
+            self.view.frame.origin.y += keyboardHeight
+        }
+    }
+    
+    func textFieldShouldReturn(_ textField: UITextField) -> Bool {
+        dismissKeyboardWhenTouchedAround()
+        return true
+    }
+    
+    // Keyboard dismiss
+    func dismissKeyboardWhenTouchedAround(){
+        txtTitle.resignFirstResponder()
+        txtContents.resignFirstResponder()
+    }
+    
+    // 옵저버 등록
+    func registerForKeyboardNotifications() {
+      NotificationCenter.default.addObserver(self, selector:#selector(keyboardWillShow), name: UIResponder.keyboardWillShowNotification, object: nil)
+      NotificationCenter.default.addObserver(self, selector:#selector(keyboardWillHide), name: UIResponder.keyboardWillHideNotification, object: nil)
+    }
+    
+     // 옵저버 등록 해제
+    func unregisterForKeyboardNotifications() {
+        NotificationCenter.default.removeObserver(self, name: UIResponder.keyboardWillShowNotification, object: nil)
+        NotificationCenter.default.removeObserver(self, name: UIResponder.keyboardWillHideNotification, object: nil)
     }
     
     // MARK: - Trash
@@ -223,11 +298,12 @@ class NoteViewController: UIViewController {
         self.navigationController?.popViewController(animated: true)
     }
     
-    // MARK: - Importance
-    @IBAction func touchImportanceColorPicker(_ sender: UIButton) {
-        self.currentImportanceColorIndex = sender.tag
-        self.importanceView.backgroundColor =  self.colorList[currentImportanceColorIndex]
+    // MARK: - BackGround
+    @IBAction func touchBackGroundColorPicker(_ sender: UIButton) {
+        self.currentBgColorIndex = sender.tag
+        self.backgroundView.backgroundColor = self.colorList[currentBgColorIndex]
     }
+
     // MARK: - Camera
     func openPhotoLibrary(){
         let optionMenuAlert = UIAlertController(title: nil, message: nil, preferredStyle: .actionSheet)
@@ -283,13 +359,16 @@ class NoteViewController: UIViewController {
     private func newNote() {
         self.saveNote()
         self.clearNote()
-        db.insertNote(id: 0, title: note.title, content: note.content, lastDate: currentDate(), importance: .white)
+        db.insertNote(id: 0, title: note.title, content: note.content, lastDate: currentDate(), importance: note.importance, background: note.background)
         self.note.id = db.readLast().id
     }
     
-    // DB에 Note 정보 업데이트 시키기
+    // DB에 Note 정보 업데이트
     private func saveNote() {
-        db.update(id: note.id, title: note.title, content: note.content, lastDate: currentDate(), importance: colorList[currentImportanceColorIndex])
+        if note.title == "" { // 제목이 없을 경우, 내용을 제목으로 대체
+            note.title = note.content
+        }
+        db.update(id: note.id, title: note.title, content: note.content, lastDate: currentDate(), importance: colorList[currentImportanceColorIndex], background: colorList[currentBgColorIndex])
     }
     
     private func clearNote() {
@@ -297,14 +376,21 @@ class NoteViewController: UIViewController {
         self.txtContents.text = "내용 입력"
         self.txtContents.textColor = UIColor.lightGray
         self.importanceView.backgroundColor = .white
+        self.backgroundView.backgroundColor = .black
     }
     
-    // 현재 날짜 구하기
+    // 현재 날짜
     func currentDate() -> String{
         let now = NSDate()
         let dateFormatter = DateFormatter()
-        dateFormatter.dateFormat = "yyyy/MM/dd"
+        dateFormatter.dateFormat = "yyyy/MM/dd HH:mm"
         return dateFormatter.string(from: now as Date)
+    }
+    
+    // MARK: - Importance
+    @IBAction func touchImportanceColorPicker(_ sender: UIButton) {
+        self.currentImportanceColorIndex = sender.tag
+        self.importanceView.backgroundColor =  self.colorList[currentImportanceColorIndex]
     }
 }
 
@@ -315,21 +401,33 @@ extension NoteViewController: SendPhotoDataDelegate {
         self.selectedPhotos = photos
     }
 }
-
+// MARK: - UITextFieldDelegate
+extension NoteViewController: UITextFieldDelegate {
+    
+     // title 편집을 시작될때
+    func textFieldDidBeginEditing(_ textField: UITextField) {
+        reload(status: .write)
+    }
+    
+    // title 편집이 끝날때
+    func textFieldDidEndEditing(_ textField: UITextField) {
+        reload(status: .normal)
+    }
+}
 // MARK: - UITextViewDelegate
 extension NoteViewController: UITextViewDelegate {
     
-    // 편집을 시작될때
+    // contents 편집을 시작될때
     func textViewDidBeginEditing(_ textView: UITextView) {
         reload(status: .write)
-        textContensSetupView()
+        textContentsSetupView()
     }
     
-    // 편집이 끝날때
+    // contents 편집이 끝날때
     func textViewDidEndEditing(_ textView: UITextView) {
         reload(status: .normal)
         if txtContents.text == "" {
-            textContensSetupView()
+            textContentsSetupView()
         }
     }
     
@@ -337,13 +435,8 @@ extension NoteViewController: UITextViewDelegate {
         return true
     }
     
-    // Keyboard dismiss
-    func dismissKeyboardWhenTouchedAround(){
-        txtContents.resignFirstResponder()
-    }
-    
     // UITextView PlaceHolder 설정
-    func textContensSetupView() {
+    func textContentsSetupView() {
         if txtContents.text == "" {
             txtContents.text = "내용 입력"
             txtContents.textColor = UIColor.lightGray
@@ -353,3 +446,5 @@ extension NoteViewController: UITextViewDelegate {
         }
     }
 }
+
+

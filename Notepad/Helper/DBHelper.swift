@@ -46,7 +46,7 @@ class DBHelper
     
     /// create note table
     func createNoteTable() {
-        let createTableString = "CREATE TABLE IF NOT EXISTS note(Id INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT, title TEXT, content TEXT, lastDate TEXT, importance TEXT);"
+        let createTableString = "CREATE TABLE IF NOT EXISTS note(Id INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT, title TEXT, content TEXT, lastDate TEXT, importance TEXT, background TEXT);"
         var createTableStatement: OpaquePointer? = nil
         if sqlite3_prepare_v2(db, createTableString, -1, &createTableStatement, nil) == SQLITE_OK
         {
@@ -81,7 +81,7 @@ class DBHelper
         sqlite3_finalize(createTableStatement)
     }
     
-    func insertNote(id: Int, title:String, content: String, lastDate: String, importance: UIColor)
+    func insertNote(id: Int, title:String, content: String, lastDate: String, importance: UIColor, background: UIColor)
     {
         let notes = read()
         for note in notes
@@ -92,7 +92,7 @@ class DBHelper
             }
         }
         
-        let insertStatementString = "INSERT INTO note (id, title, content, lastDate, importance) VALUES (?, ?, ?, ?, ?);"
+        let insertStatementString = "INSERT INTO note (id, title, content, lastDate, importance, background) VALUES (?, ?, ?, ?, ?, ?);"
         var insertStatement: OpaquePointer? = nil
         if sqlite3_prepare_v2(db, insertStatementString, -1, &insertStatement, nil) == SQLITE_OK {
 //            sqlite3_bind_int(insertStatement, 1, Int32(id)) --> 자동입력이라 무시가능
@@ -100,6 +100,7 @@ class DBHelper
             sqlite3_bind_text(insertStatement, 3, (content as NSString).utf8String, -1, nil)
             sqlite3_bind_text(insertStatement, 4, (lastDate as NSString).utf8String, -1, nil)
             sqlite3_bind_text(insertStatement, 5, (importance.toHex! as NSString).utf8String, -1, nil)
+            sqlite3_bind_text(insertStatement, 6, (background.toHex! as NSString).utf8String, -1, nil)
             
             if sqlite3_step(insertStatement) == SQLITE_DONE {
                 print("Successfully inserted row.")
@@ -112,8 +113,8 @@ class DBHelper
         sqlite3_finalize(insertStatement)
     }
     
-    func update(id: Int, title:String, content: String, lastDate: String, importance: UIColor) {
-        let updateStatementString = "UPDATE note SET title = '\(title)', content = '\(content)', lastDate = '\(lastDate)', importance = '\(String(describing: importance.toHex!))' WHERE id = '\(id)';"
+    func update(id: Int, title:String, content: String, lastDate: String, importance: UIColor, background: UIColor) {
+        let updateStatementString = "UPDATE note SET title = '\(title)', content = '\(content)', lastDate = '\(lastDate)', importance = '\(String(describing: importance.toHex!))', background = '\(String(describing: background.toHex!))' WHERE id = '\(id)';"
 
         var updateStatement: OpaquePointer? = nil
         if sqlite3_prepare_v2(db, updateStatementString, -1, &updateStatement, nil) == SQLITE_OK {
@@ -129,7 +130,7 @@ class DBHelper
     }
     
     func read() -> [NoteModel] {
-        let queryStatementString = "SELECT * FROM note;"
+        let queryStatementString = "SELECT * FROM note ORDER BY id DESC;"
         var queryStatement: OpaquePointer? = nil
         var noteModels : [NoteModel] = []
         if sqlite3_prepare_v2(db, queryStatementString, -1, &queryStatement, nil) == SQLITE_OK {
@@ -139,7 +140,10 @@ class DBHelper
                 let content = String(describing: String(cString: sqlite3_column_text(queryStatement, 2)))
                 let lastDate = String(sqlite3_column_double(queryStatement, 3))
                 let importance = String(describing: String(cString: sqlite3_column_text(queryStatement, 4)))
-                noteModels.append(NoteModel(id: Int(id), title: title, content: content, lastDate: lastDate, importance: UIColor.init(hexString: importance)))
+                let background = String(describing: String(cString: sqlite3_column_text(queryStatement, 5)))
+                
+                noteModels.append(NoteModel(id: Int(id), title: title, content: content, lastDate: lastDate, importance: UIColor.init(hexString: importance), background: UIColor.init(hexString: background)))
+                
 //                print("Query Result:")
 //                print("\(id) | \(title)")
             }
@@ -161,8 +165,9 @@ class DBHelper
                 let content = String(describing: String(cString: sqlite3_column_text(queryStatement, 2)))
                 let lastDate = String(sqlite3_column_double(queryStatement, 3))
                 let importance = String(describing: String(cString: sqlite3_column_text(queryStatement, 4)))
-                noteModels.append(NoteModel(id: Int(id), title: title, content: content, lastDate: lastDate, importance: UIColor.init(hexString: importance)))
-                print("\(id) | \(title)")
+                let background = String(describing: String(cString: sqlite3_column_text(queryStatement, 5)))
+                
+                noteModels.append(NoteModel(id: Int(id), title: title, content: content, lastDate: lastDate, importance: UIColor.init(hexString: importance), background: UIColor.init(hexString: background)))
             }
         } else {
             print("SELECT statement could not be prepared")

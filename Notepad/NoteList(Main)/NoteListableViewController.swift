@@ -26,7 +26,7 @@ class NoteListableViewController: UITableViewController {
     }
     
     private func setup(){
-        db.insertNote(id: 0, title: "A 제목", content: "A 내용", lastDate: "2020/02/01", importance: .black)
+        db.insertNote(id: 0, title: "A 제목", content: "A 내용", lastDate: "2020/02/01", importance: .white, background: .black)
 //        db.insertNote(id: 1, title: "B 제목", content: "B 내용", lastDate: "2020/02/03", importance: .red)
 //        db.insertNote(id: 2, title: "C 제목", content: "C 내용", lastDate: "2020/02/22", importance: .blue)
 //        self.setupNavigation()
@@ -45,9 +45,19 @@ class NoteListableViewController: UITableViewController {
         }
     }
     
+    // 현재 날짜
+    func currentDate() -> String{
+        let now = NSDate()
+        let dateFormatter = DateFormatter()
+        dateFormatter.dateFormat = "yyyy/MM/dd"
+        return dateFormatter.string(from: now as Date)
+    }
+    
     // 새로운 노트를 만드는 기능
     @IBAction func openNewNote(_ sender: Any){
-        self.performSegue(withIdentifier: "showNoteViewController", sender: nil)
+        let note = NoteModel(id: 0, title: "", content: String(), lastDate: currentDate(), importance: .white, background: .black)
+        db.insertNote(id: note.id, title: note.title, content: note.content, lastDate: note.lastDate, importance: note.importance, background: note.background)
+        self.performSegue(withIdentifier: "showNoteViewController", sender: note)
     }
     
     // MARK: - Table view data source
