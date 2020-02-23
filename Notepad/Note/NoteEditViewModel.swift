@@ -88,15 +88,17 @@ class NoteEditViewModel {
             navigationItemRightTitle = "완료"
             
         case .camera:
-            isHiddenEditView = true
+            isHiddenEditView = false
             isHiddenTrashView = true
             isHiddenBackGroundView = true
             isHiddenCameraView = false
             isHiddenTextColorView = true
             isHiddenNewNoteView = true
             isHiddenImportanceView = true
+            editorHightConstranint = 201
+            editHightConstranint = 151
             navigationTitle = "사진 첨부"
-            navigationItemRightTitle = "저장"
+            navigationItemRightTitle = "완료"
             
         case .textColor:
             isHiddenEditView = false

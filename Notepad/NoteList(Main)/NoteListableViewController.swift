@@ -22,7 +22,6 @@ class NoteListableViewController: UITableViewController {
     
     override func viewWillAppear(_ animated: Bool) {
         notes = db.read()
-        images = db.readThumb()
         self.tableView.reloadData()
     }
     

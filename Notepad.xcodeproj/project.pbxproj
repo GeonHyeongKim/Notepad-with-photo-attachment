@@ -27,6 +27,7 @@
 		57FCB92A23FEDC720009E3AF /* DBHelper.swift in Sources */ = {isa = PBXBuildFile; fileRef = 57FCB92923FEDC720009E3AF /* DBHelper.swift */; };
 		57FCB92E23FF028E0009E3AF /* ImageModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 57FCB92D23FF028E0009E3AF /* ImageModel.swift */; };
 		57FCB93223FF07A40009E3AF /* ExtUIColor.swift in Sources */ = {isa = PBXBuildFile; fileRef = 57FCB93123FF07A40009E3AF /* ExtUIColor.swift */; };
+		57FCB93524030D790009E3AF /* AttatchedPhotoCollectionViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 57FCB93424030D790009E3AF /* AttatchedPhotoCollectionViewCell.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -52,6 +53,7 @@
 		57FCB92923FEDC720009E3AF /* DBHelper.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DBHelper.swift; sourceTree = "<group>"; };
 		57FCB92D23FF028E0009E3AF /* ImageModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ImageModel.swift; sourceTree = "<group>"; };
 		57FCB93123FF07A40009E3AF /* ExtUIColor.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ExtUIColor.swift; sourceTree = "<group>"; };
+		57FCB93424030D790009E3AF /* AttatchedPhotoCollectionViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AttatchedPhotoCollectionViewCell.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -118,6 +120,7 @@
 			children = (
 				57CAEC6823F98C9A00674041 /* NoteViewController.swift */,
 				57CAEC7D23FD571100674041 /* NoteEditViewModel.swift */,
+				57FCB93424030D790009E3AF /* AttatchedPhotoCollectionViewCell.swift */,
 			);
 			path = Note;
 			sourceTree = "<group>";
@@ -242,6 +245,7 @@
 				57CAEC8023FD5B4700674041 /* UIViewController.swift in Sources */,
 				57FCB92E23FF028E0009E3AF /* ImageModel.swift in Sources */,
 				57CAEC6923F98C9A00674041 /* NoteViewController.swift in Sources */,
+				57FCB93524030D790009E3AF /* AttatchedPhotoCollectionViewCell.swift in Sources */,
 				572B62EA23F9702000FFEB29 /* SceneDelegate.swift in Sources */,
 				57CAEC7423F9A40E00674041 /* ExtUINavigation.swift in Sources */,
 				57CAEC6B23F98D3400674041 /* NoteListTableViewCell.swift in Sources */,

@@ -234,8 +234,8 @@ class DBHelper
         return imageModels.first
     }
     
-    func readThumb() -> [ImageModel] {
-        let queryStatementString = "SELECT * FROM image"
+    func readThumb(note_id: Int) -> [ImageModel]? {
+        let queryStatementString = "SELECT * FROM image WHERE note_id = '\(note_id)'"
         var queryStatement: OpaquePointer? = nil
         var imageModels : [ImageModel] = []
         if sqlite3_prepare_v2(db, queryStatementString, -1, &queryStatement, nil) == SQLITE_OK {

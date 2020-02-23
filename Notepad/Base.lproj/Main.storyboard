@@ -592,11 +592,13 @@
                         <outlet property="backgroundView" destination="loI-Hs-zMe" id="YC8-rj-Wva"/>
                         <outlet property="bgColorEditView" destination="24g-Ib-W1w" id="p5c-3r-d0o"/>
                         <outlet property="btnNavtionRight" destination="NN7-yg-fto" id="DoM-3J-4ta"/>
+                        <outlet property="cvPhoto" destination="XRb-OI-yd8" id="nWA-Sf-nGd"/>
                         <outlet property="editHightConstranints" destination="cMu-As-Z3e" id="pb7-ct-OOB"/>
                         <outlet property="editView" destination="s6f-NZ-FCo" id="tM2-fO-W0o"/>
                         <outlet property="editorHightConstranints" destination="Cn2-Qr-Y0A" id="2Vh-iT-3L9"/>
                         <outlet property="importanceEditView" destination="r52-CA-t2g" id="ovU-Gg-xla"/>
                         <outlet property="importanceView" destination="St2-EB-WkI" id="6iy-Mw-0DG"/>
+                        <outlet property="photoEditView" destination="PDM-9U-XUv" id="L1o-bP-h1e"/>
                         <outlet property="selectBackgroundView" destination="jEl-cY-LHL" id="6ZG-Dc-4Lz"/>
                         <outlet property="selectCameraView" destination="F3d-4C-PRF" id="yQK-6b-hge"/>
                         <outlet property="selectNewNoteView" destination="xMg-V2-r3q" id="1p7-ud-bea"/>
@@ -2068,6 +2070,92 @@
                     </constraints>
                     <viewLayoutGuide key="safeArea" id="YS2-jp-RLX"/>
                 </view>
+                <view contentMode="scaleToFill" insetsLayoutMarginsFromSafeArea="NO" id="PDM-9U-XUv" userLabel="Photo View">
+                    <rect key="frame" x="0.0" y="0.0" width="375" height="152"/>
+                    <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                    <subviews>
+                        <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="sWs-z8-AJ4" userLabel="Cancel Button">
+                            <rect key="frame" x="0.0" y="0.0" width="375" height="52"/>
+                            <color key="backgroundColor" white="0.33333333333333331" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                            <color key="tintColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                            <state key="normal" title="삭제">
+                                <color key="titleColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                            </state>
+                        </button>
+                        <collectionView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" bounces="NO" showsHorizontalScrollIndicator="NO" showsVerticalScrollIndicator="NO" bouncesZoom="NO" dataMode="prototypes" translatesAutoresizingMaskIntoConstraints="NO" id="XRb-OI-yd8" userLabel="Photo Collection View">
+                            <rect key="frame" x="0.0" y="52" width="375" height="100"/>
+                            <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                            <constraints>
+                                <constraint firstAttribute="height" constant="100" id="mJ2-ef-Wjr"/>
+                            </constraints>
+                            <collectionViewFlowLayout key="collectionViewLayout" scrollDirection="horizontal" minimumLineSpacing="10" minimumInteritemSpacing="10" id="G99-ze-AXG">
+                                <size key="itemSize" width="70" height="70"/>
+                                <size key="headerReferenceSize" width="0.0" height="0.0"/>
+                                <size key="footerReferenceSize" width="0.0" height="0.0"/>
+                                <inset key="sectionInset" minX="0.0" minY="5" maxX="0.0" maxY="5"/>
+                            </collectionViewFlowLayout>
+                            <cells>
+                                <collectionViewCell opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" restorationIdentifier="AttatchedPhotoCollectionViewCell" reuseIdentifier="AttatchedPhotoCollectionViewCell" id="QeH-Kg-3l0" userLabel="PhotoCollectionViewCell" customClass="AttatchedPhotoCollectionViewCell" customModule="Notepad" customModuleProvider="target">
+                                    <rect key="frame" x="0.0" y="15" width="70" height="70"/>
+                                    <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                                    <view key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center">
+                                        <rect key="frame" x="0.0" y="0.0" width="70" height="70"/>
+                                        <autoresizingMask key="autoresizingMask"/>
+                                        <subviews>
+                                            <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="2zf-6g-Tce">
+                                                <rect key="frame" x="0.0" y="0.0" width="70" height="70"/>
+                                                <subviews>
+                                                    <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="plus_icon" translatesAutoresizingMaskIntoConstraints="NO" id="5ge-kS-9Hb">
+                                                        <rect key="frame" x="0.0" y="0.0" width="70" height="70"/>
+                                                    </imageView>
+                                                    <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="aaW-tx-yLq">
+                                                        <rect key="frame" x="0.0" y="0.0" width="70" height="70"/>
+                                                    </view>
+                                                </subviews>
+                                                <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
+                                                <constraints>
+                                                    <constraint firstItem="aaW-tx-yLq" firstAttribute="width" secondItem="2zf-6g-Tce" secondAttribute="width" id="AAb-1R-05J"/>
+                                                    <constraint firstItem="5ge-kS-9Hb" firstAttribute="height" secondItem="2zf-6g-Tce" secondAttribute="height" id="LvO-QG-PjC"/>
+                                                    <constraint firstItem="5ge-kS-9Hb" firstAttribute="width" secondItem="2zf-6g-Tce" secondAttribute="width" id="Wat-ha-YNf"/>
+                                                    <constraint firstItem="5ge-kS-9Hb" firstAttribute="centerX" secondItem="2zf-6g-Tce" secondAttribute="centerX" id="gfx-tA-eAN"/>
+                                                    <constraint firstItem="aaW-tx-yLq" firstAttribute="centerX" secondItem="2zf-6g-Tce" secondAttribute="centerX" id="jcc-cF-4eb"/>
+                                                    <constraint firstItem="5ge-kS-9Hb" firstAttribute="centerY" secondItem="2zf-6g-Tce" secondAttribute="centerY" id="kz5-FI-hAy"/>
+                                                    <constraint firstItem="aaW-tx-yLq" firstAttribute="height" secondItem="2zf-6g-Tce" secondAttribute="height" id="rqG-Uy-GhY"/>
+                                                    <constraint firstItem="aaW-tx-yLq" firstAttribute="centerY" secondItem="2zf-6g-Tce" secondAttribute="centerY" id="y9c-QI-XJG"/>
+                                                </constraints>
+                                            </view>
+                                        </subviews>
+                                    </view>
+                                    <constraints>
+                                        <constraint firstItem="2zf-6g-Tce" firstAttribute="width" secondItem="QeH-Kg-3l0" secondAttribute="width" id="8Ip-h9-p0B"/>
+                                        <constraint firstItem="2zf-6g-Tce" firstAttribute="centerY" secondItem="QeH-Kg-3l0" secondAttribute="centerY" id="Xcc-72-Kcx"/>
+                                        <constraint firstItem="2zf-6g-Tce" firstAttribute="height" secondItem="QeH-Kg-3l0" secondAttribute="height" id="dJi-j1-SXf"/>
+                                        <constraint firstItem="2zf-6g-Tce" firstAttribute="centerX" secondItem="QeH-Kg-3l0" secondAttribute="centerX" id="gNw-Ft-Kn0"/>
+                                    </constraints>
+                                    <connections>
+                                        <outlet property="borderView" destination="aaW-tx-yLq" id="Uwd-gH-Sph"/>
+                                        <outlet property="ivPhoto" destination="5ge-kS-9Hb" id="M84-e8-G2g"/>
+                                    </connections>
+                                </collectionViewCell>
+                            </cells>
+                            <connections>
+                                <outlet property="dataSource" destination="HoM-Sn-XN5" id="8lg-lu-ip9"/>
+                                <outlet property="delegate" destination="HoM-Sn-XN5" id="RRv-k1-wFL"/>
+                            </connections>
+                        </collectionView>
+                    </subviews>
+                    <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                    <constraints>
+                        <constraint firstItem="sWs-z8-AJ4" firstAttribute="width" secondItem="PDM-9U-XUv" secondAttribute="width" id="1Ik-ed-kXb"/>
+                        <constraint firstItem="sWs-z8-AJ4" firstAttribute="centerX" secondItem="PDM-9U-XUv" secondAttribute="centerX" id="EG9-0l-5Zg"/>
+                        <constraint firstItem="XRb-OI-yd8" firstAttribute="bottom" secondItem="286-hW-8cl" secondAttribute="bottom" id="OqZ-6k-qjF"/>
+                        <constraint firstItem="XRb-OI-yd8" firstAttribute="centerX" secondItem="PDM-9U-XUv" secondAttribute="centerX" id="TLP-ee-kxJ"/>
+                        <constraint firstItem="sWs-z8-AJ4" firstAttribute="bottom" secondItem="XRb-OI-yd8" secondAttribute="top" id="lqR-aF-JT3"/>
+                        <constraint firstItem="XRb-OI-yd8" firstAttribute="width" secondItem="PDM-9U-XUv" secondAttribute="width" id="oN9-lF-BLh"/>
+                        <constraint firstItem="sWs-z8-AJ4" firstAttribute="top" secondItem="PDM-9U-XUv" secondAttribute="top" id="zad-WU-DoC"/>
+                    </constraints>
+                    <viewLayoutGuide key="safeArea" id="286-hW-8cl"/>
+                </view>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="C4F-pU-y8u" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>
             </objects>
             <point key="canvasLocation" x="1402.8985507246377" y="887.94642857142856"/>
@@ -2230,6 +2318,7 @@
         <image name="filledDoc_icn" width="50" height="50"/>
         <image name="newNote_icn" width="50" height="50"/>
         <image name="pencil_icn" width="50" height="50"/>
+        <image name="plus_icon" width="50" height="50"/>
         <image name="thumb_icon" width="50" height="50"/>
         <image name="trash_icn" width="50" height="50"/>
     </resources>

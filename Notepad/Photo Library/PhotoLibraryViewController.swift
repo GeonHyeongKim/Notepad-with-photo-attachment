@@ -10,7 +10,7 @@ import UIKit
 import Photos
 
 protocol SendPhotoDataDelegate: class {
-    func sendPhoto(photos: Set<UIImage>)
+    func sendPhoto(photos: [UIImage])
 }
 
 class PhotoLibraryViewController: UIViewController {
@@ -19,7 +19,7 @@ class PhotoLibraryViewController: UIViewController {
     
     var photoDelegate: SendPhotoDataDelegate?
     var libraryPhotos = [UIImage]() // 전체 사진 Data
-    var selectedPhotos = Set<UIImage>() // 최종 선택된 사진 Data
+    var selectedPhotos = [UIImage]() // 최종 선택된 사진 Data
     var selectedCells : NSMutableArray = [] // 최종 선택된 IndexPath Data
     
     override func viewDidLoad() {
@@ -126,13 +126,13 @@ extension PhotoLibraryViewController: UICollectionViewDelegate {
     
     func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) { //선택을 했을때
         self.selectedCells.add(indexPath)
-        self.selectedPhotos.insert(self.libraryPhotos[indexPath.row])
+        self.selectedPhotos.append(self.libraryPhotos[indexPath.row])
         self.cvPhotoLibrary.reloadItems(at: [indexPath])
     }
     
     func collectionView(_ collectionView: UICollectionView, didDeselectItemAt indexPath: IndexPath) { //선택을 풀었을때
         self.selectedCells.remove(indexPath)
-        self.selectedPhotos.remove(self.libraryPhotos[indexPath.row])
+        self.selectedPhotos.remove(at: libraryPhotos.firstIndex(of: self.libraryPhotos[indexPath.row])!)
         self.cvPhotoLibrary.reloadItems(at: [indexPath])
      }
 }

@@ -71,8 +71,11 @@ class NoteViewController: UIViewController {
     ]
     
     // Camera
+    @IBOutlet weak var cvPhoto: UICollectionView!
     @IBOutlet weak var selectCameraView: UIView!
-    var selectedPhotos: Set<UIImage>!
+    @IBOutlet var photoEditView: UIView!
+    var selectedPhotos: [UIImage]!
+    var selectedPhotoIndex = Int(-1)
     
     // TextColor
     @IBOutlet weak var selectTextColorView: UIView!
@@ -103,6 +106,8 @@ class NoteViewController: UIViewController {
         }
         
         print(selectedPhotos)
+        self.cvPhoto.reloadData()
+        reload(status: .camera)
         self.attachImage(photo: selectedPhotos)
     }
     
@@ -151,6 +156,16 @@ class NoteViewController: UIViewController {
         if note.content == "내용 입력"{
             self.txtContents.textColor = UIColor.lightGray
         }
+        
+        // check attached photo
+        guard let attachPhotos = db.readThumb(note_id: note.id) else {
+            return
+        }
+        
+        selectedPhotos = [UIImage]()
+        for attachedPhoto in attachPhotos{
+            selectedPhotos.append(attachedPhoto.photo)
+        }
     }
     
     func notification() {
@@ -191,7 +206,7 @@ class NoteViewController: UIViewController {
         case .background:
             self.dismissKeyboardWhenTouchedAround()
         case .camera:
-            self.openPhotoLibrary()
+            break
         case .textColor:
             print("textColor")
         case .newNote:
@@ -204,6 +219,8 @@ class NoteViewController: UIViewController {
         switch status {
         case .background:
             editContentView = bgColorEditView
+        case .camera:
+            editContentView = photoEditView
         case .textColor:
             editContentView = textColorEditView
         case .importance:
@@ -366,7 +383,7 @@ class NoteViewController: UIViewController {
         })
         let cancelAction = UIAlertAction(title: "취소", style: .cancel, handler: {
             (alert: UIAlertAction!) -> Void in
-            self.reload(status: .normal)
+            self.reload(status: .camera)
         })
         
         optionMenuAlert.addAction(photoLibraryAction)
@@ -400,16 +417,16 @@ class NoteViewController: UIViewController {
             let image = UIImage(data: imageData)
             DispatchQueue.main.async {
                 if self.selectedPhotos == nil {
-                    self.selectedPhotos = Set<UIImage>()
+                    self.selectedPhotos = [UIImage]()
                 }
                 
-                self.selectedPhotos.insert(image!)
+                self.selectedPhotos.append(image!)
             }
         }
     }
     
     // 이미지 첨부
-    func attachImage(photo: Set<UIImage>) {
+    func attachImage(photo: [UIImage]) {
         
         // start with our text data
         let font = UIFont.systemFont(ofSize: 26)
@@ -562,6 +579,49 @@ class NoteViewController: UIViewController {
         self.importanceView.backgroundColor =  self.colorList[currentImportanceColorIndex]
     }
 }
+// MARK: - Setting Filter
+extension NoteViewController: UICollectionViewDataSource, UICollectionViewDelegate{
+    
+    func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
+        guard selectedPhotos != nil else {
+            return 1
+        }
+        return selectedPhotos.count + 1
+    }
+    
+    func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
+        let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "AttatchedPhotoCollectionViewCell", for: indexPath) as! AttatchedPhotoCollectionViewCell
+        
+        if self.selectedPhotos == nil || (selectedPhotos.count) == indexPath.row{
+            cell.ivPhoto.image = UIImage(named: "plus_icon.png")
+            cell.imageNamed = "plus_icon"
+        } else {
+            cell.ivPhoto.image = self.selectedPhotos[indexPath.row]
+            cell.imageNamed = ""
+        }
+        
+        if selectedPhotoIndex == indexPath.row {
+            cell.borderView.layer.borderColor = UIColor.white.cgColor
+            cell.borderView.layer.borderWidth = 3
+        } else {
+            cell.borderView.layer.borderColor = nil
+            cell.borderView.layer.borderWidth = 0
+        }
+        
+        return cell
+    }
+    
+    func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
+        self.selectedPhotoIndex = indexPath.row
+
+        if self.selectedPhotos == nil || (selectedPhotos.count) == indexPath.row { // 마지막 + 이미지
+            openPhotoLibrary()
+        }
+        self.cvPhoto.reloadData()
+
+    }
+}
+
 // MARK: - NoteViewControllerDelegate
 extension NoteViewController: UIImagePickerControllerDelegate, UINavigationControllerDelegate {
     func imagePickerController(_ picker: UIImagePickerController, didFinishPickingMediaWithInfo info: [UIImagePickerController.InfoKey : Any]) {
@@ -574,10 +634,10 @@ extension NoteViewController: UIImagePickerControllerDelegate, UINavigationContr
 
         // Camera로 찍은 image 저장
         if selectedPhotos == nil {
-            self.selectedPhotos = Set<UIImage>()
+            self.selectedPhotos = [UIImage]()
         }
         
-        self.selectedPhotos.insert(image)
+        self.selectedPhotos.append(image)
 
         
     }
@@ -585,12 +645,12 @@ extension NoteViewController: UIImagePickerControllerDelegate, UINavigationContr
 // MARK: - NoteViewControllerDelegate
 extension NoteViewController: SendPhotoDataDelegate {
     
-    func sendPhoto(photos: Set<UIImage>) {
+    func sendPhoto(photos: [UIImage]) {
         if selectedPhotos == nil {
             self.selectedPhotos = photos
         } else { // photo Library에서 기존에 삽입
             for photo in photos {
-                self.selectedPhotos.insert(photo)
+                self.selectedPhotos.append(photo)
             }
         }
     }
