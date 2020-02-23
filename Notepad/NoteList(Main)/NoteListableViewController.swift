@@ -56,9 +56,9 @@ class NoteListableViewController: UITableViewController {
     
     // 새로운 노트를 만드는 기능
     @IBAction func openNewNote(_ sender: Any){
-        let note = NoteModel(id: 0, title: "제목 없음", content: "내용 입력", lastDate: currentDate(), importance: .white, background: .black)
+        let note = NoteModel(id: 0, title: "제목 없음", content: "내용 입력", lastDate: currentDate(), importance: .white, background: .black, text_size: 14, text_color: .white)
         notes.append(note)
-        db.insertNote(id: note.id, title: note.title, content: note.content, lastDate: note.lastDate, importance: note.importance, background: note.background)
+        db.insertNote(id: note.id, title: note.title, content: note.content, lastDate: note.lastDate, importance: note.importance, background: note.background, text_size: note.textSize, text_color: note.textColor)
         note.id = db.readLast().id
         self.performSegue(withIdentifier: "showNoteViewController", sender: note)
     }

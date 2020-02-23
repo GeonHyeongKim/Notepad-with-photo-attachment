@@ -603,6 +603,7 @@
                         <outlet property="selectTextColorView" destination="Yba-tL-eIo" id="lNv-VS-fzC"/>
                         <outlet property="selectTrashView" destination="Inp-2f-Bxg" id="8ks-tG-4tY"/>
                         <outlet property="textColorEditView" destination="aod-ky-Hi0" id="dqF-g3-qGn"/>
+                        <outlet property="textSizrSlider" destination="yf8-0o-3KB" id="39R-Bf-3Nh"/>
                         <outlet property="txtContents" destination="92S-sG-7T4" id="VMa-XO-yg7"/>
                         <outlet property="txtContentsBottomMargin" destination="rhN-pV-8gD" id="5oz-4H-Iin"/>
                         <outlet property="txtTitle" destination="Bp9-m3-nKp" id="Qw1-rI-PPr"/>
@@ -1617,6 +1618,9 @@
                                                 </view>
                                                 <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="d4A-Hx-obY" userLabel="Button 0">
                                                     <rect key="frame" x="6" y="0.5" width="27" height="27"/>
+                                                    <connections>
+                                                        <action selector="touchTextColorColorPicker:" destination="HoM-Sn-XN5" eventType="touchUpInside" id="YBt-39-aJx"/>
+                                                    </connections>
                                                 </button>
                                             </subviews>
                                             <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
@@ -1664,6 +1668,9 @@
                                                 </view>
                                                 <button opaque="NO" tag="1" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="m4V-Sd-4eW" userLabel="Button 1">
                                                     <rect key="frame" x="6" y="0.5" width="27" height="27"/>
+                                                    <connections>
+                                                        <action selector="touchTextColorColorPicker:" destination="HoM-Sn-XN5" eventType="touchUpInside" id="0VW-wW-juT"/>
+                                                    </connections>
                                                 </button>
                                             </subviews>
                                             <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
@@ -1711,6 +1718,9 @@
                                                 </view>
                                                 <button opaque="NO" tag="2" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="mnx-aJ-BNd" userLabel="Button 2">
                                                     <rect key="frame" x="6" y="0.5" width="27" height="27"/>
+                                                    <connections>
+                                                        <action selector="touchTextColorColorPicker:" destination="HoM-Sn-XN5" eventType="touchUpInside" id="asH-Dk-tnf"/>
+                                                    </connections>
                                                 </button>
                                             </subviews>
                                             <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
@@ -1758,6 +1768,9 @@
                                                 </view>
                                                 <button opaque="NO" tag="3" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="Ujb-o4-P5K" userLabel="Button 3">
                                                     <rect key="frame" x="6" y="0.5" width="27" height="27"/>
+                                                    <connections>
+                                                        <action selector="touchTextColorColorPicker:" destination="HoM-Sn-XN5" eventType="touchUpInside" id="ACu-dB-bDX"/>
+                                                    </connections>
                                                 </button>
                                             </subviews>
                                             <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
@@ -1805,6 +1818,9 @@
                                                 </view>
                                                 <button opaque="NO" tag="4" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="BWe-ub-iIz" userLabel="Button 4">
                                                     <rect key="frame" x="6" y="0.5" width="27" height="27"/>
+                                                    <connections>
+                                                        <action selector="touchTextColorColorPicker:" destination="HoM-Sn-XN5" eventType="touchUpInside" id="ABH-6C-PJ9"/>
+                                                    </connections>
                                                 </button>
                                             </subviews>
                                             <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
@@ -1852,6 +1868,9 @@
                                                 </view>
                                                 <button opaque="NO" tag="5" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="XPS-bK-NaO" userLabel="Button 5">
                                                     <rect key="frame" x="6" y="0.5" width="27" height="27"/>
+                                                    <connections>
+                                                        <action selector="touchTextColorColorPicker:" destination="HoM-Sn-XN5" eventType="touchUpInside" id="Dr0-ih-A8d"/>
+                                                    </connections>
                                                 </button>
                                             </subviews>
                                             <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
@@ -1899,6 +1918,9 @@
                                                 </view>
                                                 <button opaque="NO" tag="6" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="3LC-2p-EG0" userLabel="Button 6">
                                                     <rect key="frame" x="6" y="0.5" width="27" height="27"/>
+                                                    <connections>
+                                                        <action selector="touchTextColorColorPicker:" destination="HoM-Sn-XN5" eventType="touchUpInside" id="cmh-ft-Meh"/>
+                                                    </connections>
                                                 </button>
                                             </subviews>
                                             <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
@@ -1946,6 +1968,9 @@
                                                 </view>
                                                 <button opaque="NO" tag="7" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="RkR-f8-vKo" userLabel="Button 7">
                                                     <rect key="frame" x="6" y="0.5" width="27" height="27"/>
+                                                    <connections>
+                                                        <action selector="touchTextColorColorPicker:" destination="HoM-Sn-XN5" eventType="touchUpInside" id="vL9-fF-f0r"/>
+                                                    </connections>
                                                 </button>
                                             </subviews>
                                             <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
@@ -1993,6 +2018,9 @@
                                                 </view>
                                                 <button opaque="NO" tag="8" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="8XW-zs-Xpe" userLabel="Button 8">
                                                     <rect key="frame" x="6" y="0.5" width="27" height="27"/>
+                                                    <connections>
+                                                        <action selector="touchTextColorColorPicker:" destination="HoM-Sn-XN5" eventType="touchUpInside" id="BmS-6W-fRv"/>
+                                                    </connections>
                                                 </button>
                                             </subviews>
                                             <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
@@ -2018,13 +2046,16 @@
                                 <constraint firstAttribute="trailing" secondItem="pjB-gZ-FCc" secondAttribute="trailing" constant="16" id="oQ0-1k-jDg"/>
                             </constraints>
                         </view>
-                        <slider opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" value="50" minValue="0.0" maxValue="100" translatesAutoresizingMaskIntoConstraints="NO" id="yf8-0o-3KB">
+                        <slider opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" value="14" minValue="0.0" maxValue="100" translatesAutoresizingMaskIntoConstraints="NO" id="yf8-0o-3KB">
                             <rect key="frame" x="14" y="36" width="347" height="116"/>
                             <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                             <color key="tintColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                             <constraints>
                                 <constraint firstAttribute="height" constant="115" id="2H1-13-zIf"/>
                             </constraints>
+                            <connections>
+                                <action selector="sliderActionWithSender:" destination="HoM-Sn-XN5" eventType="valueChanged" id="n25-0J-ak9"/>
+                            </connections>
                         </slider>
                     </subviews>
                     <constraints>

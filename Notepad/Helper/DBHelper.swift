@@ -46,7 +46,7 @@ class DBHelper
     
     /// create note table
     func createNoteTable() {
-        let createTableString = "CREATE TABLE IF NOT EXISTS note(Id INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT, title TEXT, content TEXT, lastDate TEXT, importance TEXT, background TEXT);"
+        let createTableString = "CREATE TABLE IF NOT EXISTS note(Id INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT, title TEXT, content TEXT, lastDate TEXT, importance TEXT, background TEXT, text_size INTEGER, text_color TEXT);"
         var createTableStatement: OpaquePointer? = nil
         if sqlite3_prepare_v2(db, createTableString, -1, &createTableStatement, nil) == SQLITE_OK
         {
@@ -81,7 +81,7 @@ class DBHelper
         sqlite3_finalize(createTableStatement)
     }
     
-    func insertNote(id: Int, title:String, content: String, lastDate: String, importance: UIColor, background: UIColor)
+    func insertNote(id: Int, title:String, content: String, lastDate: String, importance: UIColor, background: UIColor, text_size: Int, text_color: UIColor)
     {
         let notes = read()
         for note in notes
@@ -92,7 +92,7 @@ class DBHelper
             }
         }
         
-        let insertStatementString = "INSERT INTO note (id, title, content, lastDate, importance, background) VALUES (?, ?, ?, ?, ?, ?);"
+        let insertStatementString = "INSERT INTO note (id, title, content, lastDate, importance, background, text_size, text_color) VALUES (?, ?, ?, ?, ?, ?, ?, ?);"
         var insertStatement: OpaquePointer? = nil
         if sqlite3_prepare_v2(db, insertStatementString, -1, &insertStatement, nil) == SQLITE_OK {
 //            sqlite3_bind_int(insertStatement, 1, Int32(id)) --> 자동입력이라 무시가능
@@ -101,7 +101,9 @@ class DBHelper
             sqlite3_bind_text(insertStatement, 4, (lastDate as NSString).utf8String, -1, nil)
             sqlite3_bind_text(insertStatement, 5, (importance.toHex! as NSString).utf8String, -1, nil)
             sqlite3_bind_text(insertStatement, 6, (background.toHex! as NSString).utf8String, -1, nil)
-            
+            sqlite3_bind_int(insertStatement, 7, Int32(text_size))
+            sqlite3_bind_text(insertStatement, 8, (text_color.toHex! as NSString).utf8String, -1, nil)
+
             if sqlite3_step(insertStatement) == SQLITE_DONE {
                 print("Successfully inserted row.")
             } else {
@@ -139,8 +141,8 @@ class DBHelper
     }
     
     // note
-    func update(id: Int, title:String, content: String, lastDate: String, importance: UIColor, background: UIColor) {
-        let updateStatementString = "UPDATE note SET title = '\(title)', content = '\(content)', lastDate = '\(lastDate)', importance = '\(String(describing: importance.toHex!))', background = '\(String(describing: background.toHex!))' WHERE id = '\(id)';"
+    func update(id: Int, title:String, content: String, lastDate: String, importance: UIColor, background: UIColor, text_size: Int, text_color: UIColor) {
+        let updateStatementString = "UPDATE note SET title = '\(title)', content = '\(content)', lastDate = '\(lastDate)', importance = '\(String(describing: importance.toHex!))', background = '\(String(describing: background.toHex!))', text_size = '\(text_size)', text_color = '\(String(describing: text_color.toHex!))' WHERE id = '\(id)';"
 
         var updateStatement: OpaquePointer? = nil
         if sqlite3_prepare_v2(db, updateStatementString, -1, &updateStatement, nil) == SQLITE_OK {
@@ -168,8 +170,11 @@ class DBHelper
                 let lastDate = String(describing: String(cString: sqlite3_column_text(queryStatement, 3)))
                 let importance = String(describing: String(cString: sqlite3_column_text(queryStatement, 4)))
                 let background = String(describing: String(cString: sqlite3_column_text(queryStatement, 5)))
+                let text_size = sqlite3_column_int(queryStatement, 6)
+                let text_color = String(describing: String(cString: sqlite3_column_text(queryStatement, 7)))
+
                 
-                noteModels.append(NoteModel(id: Int(id), title: title, content: content, lastDate: lastDate, importance: UIColor.init(hexString: importance), background: UIColor.init(hexString: background)))
+                noteModels.append(NoteModel(id: Int(id), title: title, content: content, lastDate: lastDate, importance: UIColor.init(hexString: importance), background: UIColor.init(hexString: background), text_size: Int(text_size), text_color: UIColor.init(hexString: text_color)))
                 
 //                print("Query Result:")
                 print("\(id) | \(title) | \(lastDate)")
@@ -194,8 +199,10 @@ class DBHelper
                 let lastDate = String(describing: String(cString: sqlite3_column_text(queryStatement, 3)))
                 let importance = String(describing: String(cString: sqlite3_column_text(queryStatement, 4)))
                 let background = String(describing: String(cString: sqlite3_column_text(queryStatement, 5)))
+                let text_size = sqlite3_column_int(queryStatement, 6)
+                let text_color = String(describing: String(cString: sqlite3_column_text(queryStatement, 7)))
                 
-                noteModels.append(NoteModel(id: Int(id), title: title, content: content, lastDate: lastDate, importance: UIColor.init(hexString: importance), background: UIColor.init(hexString: background)))
+                noteModels.append(NoteModel(id: Int(id), title: title, content: content, lastDate: lastDate, importance: UIColor.init(hexString: importance), background: UIColor.init(hexString: background), text_size: Int(text_size), text_color: UIColor.init(hexString: text_color)))
             }
         } else {
             print("SELECT statement could not be prepared")
@@ -228,7 +235,7 @@ class DBHelper
     }
     
     func readThumb() -> [ImageModel] {
-        let queryStatementString = "SELECT * FROM image W"
+        let queryStatementString = "SELECT * FROM image"
         var queryStatement: OpaquePointer? = nil
         var imageModels : [ImageModel] = []
         if sqlite3_prepare_v2(db, queryStatementString, -1, &queryStatement, nil) == SQLITE_OK {

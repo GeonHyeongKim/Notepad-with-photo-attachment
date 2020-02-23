@@ -76,7 +76,9 @@ class NoteViewController: UIViewController {
     
     // TextColor
     @IBOutlet weak var selectTextColorView: UIView!
-    @IBOutlet var textColorEditView: UIView!
+    @IBOutlet weak var textColorEditView: UIView!
+    @IBOutlet weak var textSizrSlider: UISlider!
+    var currentTextColorIndex: Int = 0 // 현재 텍스트 색상
     
     // NewNote
     @IBOutlet weak var selectNewNoteView: UIView!
@@ -132,6 +134,12 @@ class NoteViewController: UIViewController {
         self.backgroundView.backgroundColor = note.background
         if colorList.contains(note.background){
             self.currentBgColorIndex = colorList.firstIndex(of: note.background)!
+        }
+        self.txtContents.font = UIFont.systemFont(ofSize: CGFloat(note.textSize))
+        self.textSizrSlider.value = Float(note.textSize)
+        self.txtContents.textColor = note.textColor
+        if colorList.contains(note.textColor){
+            self.currentTextColorIndex = colorList.firstIndex(of: note.textColor)!
         }
         
         if note.title == "제목 없음"{
@@ -484,13 +492,21 @@ class NoteViewController: UIViewController {
         }
     }
     
+    // MARK: - New Note
+    @IBAction func sliderAction(sender: AnyObject) {
+        self.note.textSize = Int(textSizrSlider.value)
+        self.txtContents.font = UIFont.systemFont(ofSize: CGFloat(textSizrSlider.value))
+    }
     
-    
+    @IBAction func touchTextColorColorPicker(_ sender: UIButton) {
+        self.currentTextColorIndex = sender.tag
+        self.txtContents.textColor =  self.colorList[currentTextColorIndex]
+    }
     // MARK: - New Note
     private func newNote() {
         self.saveNote()
         self.clearNote()
-        db.insertNote(id: -1, title: note.title, content: note.content, lastDate: currentDate(), importance: note.importance, background: note.background)
+        db.insertNote(id: -1, title: note.title, content: note.content, lastDate: currentDate(), importance: note.importance, background: note.background, text_size: note.textSize, text_color: note.textColor)
         self.note.id = db.readLast().id
     }
     
@@ -504,7 +520,7 @@ class NoteViewController: UIViewController {
             note.content = "내용 없음"
         }
         // note 저장
-        db.update(id: note.id, title: note.title, content: note.content, lastDate: currentDate(), importance: colorList[currentImportanceColorIndex], background: colorList[currentBgColorIndex])
+        db.update(id: note.id, title: note.title, content: note.content, lastDate: currentDate(), importance: colorList[currentImportanceColorIndex], background: colorList[currentBgColorIndex], text_size: note.textSize, text_color: colorList[currentTextColorIndex])
         
         self.savePhotos(noteId: note.id)
     }

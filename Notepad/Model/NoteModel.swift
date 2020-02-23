@@ -16,13 +16,17 @@ class NoteModel
     var lastDate: String
     var importance: UIColor = .white
     var background: UIColor = .black
+    var textSize: Int = 14
+    var textColor: UIColor = .white
     
-    init(id: Int, title:String, content: String, lastDate: String, importance: UIColor, background: UIColor) {
+    init(id: Int, title:String, content: String, lastDate: String, importance: UIColor, background: UIColor, text_size: Int, text_color: UIColor) {
         self.id = id
         self.title = title
         self.content = content
         self.lastDate = lastDate
         self.importance = importance
         self.background = background
+        self.textSize = text_size
+        self.textColor = text_color
     }
 }
