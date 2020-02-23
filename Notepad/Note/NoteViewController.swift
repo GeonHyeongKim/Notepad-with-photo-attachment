@@ -379,7 +379,9 @@ class NoteViewController: UIViewController {
     
     private func clearNote() {
         self.txtTitle.text = ""
+        self.note.title = txtTitle.text!
         self.txtContents.text = "내용 입력"
+        self.note.content = txtContents.text!
         self.txtContents.textColor = UIColor.lightGray
         self.importanceView.backgroundColor = .white
         self.backgroundView.backgroundColor = .black
@@ -417,6 +419,7 @@ extension NoteViewController: UITextFieldDelegate {
     
     // title 편집이 끝날때
     func textFieldDidEndEditing(_ textField: UITextField) {
+        self.note.title = txtTitle.text!
         reload(status: .normal)
     }
 }
@@ -434,6 +437,8 @@ extension NoteViewController: UITextViewDelegate {
         reload(status: .normal)
         if txtContents.text == "" {
             textContentsSetupView()
+        } else {
+            self.note.content = txtContents.text
         }
     }
     
