@@ -138,14 +138,14 @@ class DBHelper
                 let id = sqlite3_column_int(queryStatement, 0)
                 let title = String(describing: String(cString: sqlite3_column_text(queryStatement, 1)))
                 let content = String(describing: String(cString: sqlite3_column_text(queryStatement, 2)))
-                let lastDate = String(sqlite3_column_double(queryStatement, 3))
+                let lastDate = String(describing: String(cString: sqlite3_column_text(queryStatement, 3)))
                 let importance = String(describing: String(cString: sqlite3_column_text(queryStatement, 4)))
                 let background = String(describing: String(cString: sqlite3_column_text(queryStatement, 5)))
                 
                 noteModels.append(NoteModel(id: Int(id), title: title, content: content, lastDate: lastDate, importance: UIColor.init(hexString: importance), background: UIColor.init(hexString: background)))
                 
 //                print("Query Result:")
-//                print("\(id) | \(title)")
+                print("\(id) | \(title) | \(lastDate)")
             }
         } else {
             print("SELECT statement could not be prepared")
@@ -163,7 +163,7 @@ class DBHelper
                 let id = sqlite3_column_int(queryStatement, 0)
                 let title = String(describing: String(cString: sqlite3_column_text(queryStatement, 1)))
                 let content = String(describing: String(cString: sqlite3_column_text(queryStatement, 2)))
-                let lastDate = String(sqlite3_column_double(queryStatement, 3))
+                let lastDate = String(describing: String(cString: sqlite3_column_text(queryStatement, 3)))
                 let importance = String(describing: String(cString: sqlite3_column_text(queryStatement, 4)))
                 let background = String(describing: String(cString: sqlite3_column_text(queryStatement, 5)))
                 
