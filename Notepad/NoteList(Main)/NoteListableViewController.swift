@@ -94,4 +94,14 @@ class NoteListableViewController: UITableViewController {
     override func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         self.performSegue(withIdentifier: "showNoteViewController", sender: notes[indexPath.row])
     }
+    
+    @available(iOS 11.0, *)
+    override func tableView(_ tableView: UITableView, trailingSwipeActionsConfigurationForRowAt indexPath: IndexPath) -> UISwipeActionsConfiguration? {
+        let deleteAction = UIContextualAction(style: .destructive, title:  "삭제", handler: { (ac:UIContextualAction, view:UIView, success:(Bool) -> Void) in
+            db.deleteByID(id: notes[indexPath.row].id) // 해당 DB만 삭제
+            self.viewWillAppear(true)
+            success(true)
+        })
+        return UISwipeActionsConfiguration(actions:[deleteAction])
+    }
 }
