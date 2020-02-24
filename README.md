@@ -8,8 +8,7 @@ You can faithfully implement the basic functionality of a typical Notepad app, a
 
 ## Capture Imgae
 1. 새 글 만들기
-<img src="./Desktop/step1.png " width="40%" height="30%" title="px(픽셀) 크기 설정" alt="step1-1"></img>
-
+![step 1](./Desktop/step1.png)
 
 ## Deployment Target
 iOS 10.0
