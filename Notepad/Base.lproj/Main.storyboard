@@ -217,8 +217,14 @@
                                             <textField opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="center" borderStyle="roundedRect" placeholder="제목 입력" textAlignment="natural" minimumFontSize="17" translatesAutoresizingMaskIntoConstraints="NO" id="Bp9-m3-nKp">
                                                 <rect key="frame" x="47" y="8" width="357" height="34"/>
                                                 <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                                                <color key="textColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                                 <fontDescription key="fontDescription" type="system" pointSize="17"/>
                                                 <textInputTraits key="textInputTraits"/>
+                                                <userDefinedRuntimeAttributes>
+                                                    <userDefinedRuntimeAttribute type="color" keyPath="_placeholderLabel.textColor">
+                                                        <color key="value" white="0.66666666666666663" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                                                    </userDefinedRuntimeAttribute>
+                                                </userDefinedRuntimeAttributes>
                                                 <connections>
                                                     <outlet property="delegate" destination="HoM-Sn-XN5" id="F8M-g7-Ids"/>
                                                 </connections>
@@ -597,6 +603,7 @@
                         <outlet property="editView" destination="s6f-NZ-FCo" id="tM2-fO-W0o"/>
                         <outlet property="editorHightConstranints" destination="Cn2-Qr-Y0A" id="2Vh-iT-3L9"/>
                         <outlet property="importanceEditView" destination="r52-CA-t2g" id="ovU-Gg-xla"/>
+                        <outlet property="importanceOuterCircleView" destination="Pcg-JU-5jX" id="Zif-6c-KGT"/>
                         <outlet property="importanceView" destination="St2-EB-WkI" id="6iy-Mw-0DG"/>
                         <outlet property="photoEditView" destination="PDM-9U-XUv" id="L1o-bP-h1e"/>
                         <outlet property="selectBackgroundView" destination="jEl-cY-LHL" id="6ZG-Dc-4Lz"/>

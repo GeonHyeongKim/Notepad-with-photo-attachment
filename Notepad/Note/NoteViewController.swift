@@ -90,6 +90,7 @@ class NoteViewController: UIViewController {
     
     // Importance
     @IBOutlet var importanceEditView: UIView!
+    @IBOutlet weak var importanceOuterCircleView: UIView! // 중요도 테두리 색
     var currentImportanceColorIndex: Int = 0 // 현재 중요도 색상
     
     
@@ -133,21 +134,34 @@ class NoteViewController: UIViewController {
     // 저장된 노트 정보 입력
     func setupNote(){
         reload(status: .normal)
+        
+        // importance Color
         self.importanceView.backgroundColor = note.importance
         if colorList.contains(note.importance){
             self.currentImportanceColorIndex = colorList.firstIndex(of: note.importance)!
         }
-        self.txtContents.text = note.content
+        
+        // background Color
         self.backgroundView.backgroundColor = note.background
         if colorList.contains(note.background){
             self.currentBgColorIndex = colorList.firstIndex(of: note.background)!
         }
+        
+        // contents
+        self.txtContents.text = note.content
         self.txtContents.font = UIFont.systemFont(ofSize: CGFloat(note.textSize))
-        self.textSizrSlider.value = Float(note.textSize)
+        self.txtContents.tintColor = .lightGray
         self.txtContents.textColor = note.textColor
         if colorList.contains(note.textColor){
             self.currentTextColorIndex = colorList.firstIndex(of: note.textColor)!
         }
+        
+        // text sizr
+        self.textSizrSlider.value = Float(note.textSize)
+        
+        // title Cursor color
+        self.txtTitle.tintColor = .lightGray
+
         
         if note.title == "제목 없음"{
             self.txtTitle.text = ""
@@ -155,7 +169,7 @@ class NoteViewController: UIViewController {
             self.txtTitle.text = note.title
         }
         
-        if note.content == "내용 입력"{
+        if note.content == "내용 입력" || note.content == "내용 없음"{
             self.txtContents.textColor = UIColor.lightGray
         }
         
@@ -301,7 +315,7 @@ class NoteViewController: UIViewController {
         self.present(myAlert, animated:true, completion:nil)
     }
     
-    private func presentErrorAlert(title: String, message: String) {
+    private func presentSympleAlert(title: String, message: String) {
         let myAlert = UIAlertController(title: title, message: message, preferredStyle: .alert)
         
         let okAction = UIAlertAction(title: "OK", style: .default, handler: nil)
@@ -399,6 +413,15 @@ class NoteViewController: UIViewController {
     @IBAction func touchBackGroundColorPicker(_ sender: UIButton) {
         self.currentBgColorIndex = sender.tag
         self.backgroundView.backgroundColor = self.colorList[currentBgColorIndex]
+        
+        // 흰색 배경을 click할 경우
+        if currentBgColorIndex == 0 {
+            importanceOuterCircleView.backgroundColor = .lightGray
+            txtTitle.textColor = .black
+            txtContents.textColor = .black
+        } else {
+            importanceOuterCircleView.backgroundColor = .white
+        }
     }
 
     // MARK: - Camera
@@ -455,11 +478,12 @@ class NoteViewController: UIViewController {
                     
                     self.selectedPhotos.append(UIImage(data: data)!)
                     self.cvPhoto.reloadData()
+                    self.reload(status: .camera)
                 }
             } else {
                 // show as an alert if you want to
                 DispatchQueue.main.async{
-                    self.presentErrorAlert(title: "URL 찾기 실패", message: "URL 주소에서 이미지를 찾지 못했습니다.")
+                    self.presentSympleAlert(title: "URL 찾기 실패", message: "URL 주소에서 이미지를 찾지 못했습니다.")
                 }
             }
         }
@@ -470,7 +494,7 @@ class NoteViewController: UIViewController {
         let session = URLSession.shared
             
         guard let url = URL(string: urlString) else {
-            return self.presentAlert(title: "URL 입력", message: "", placeHolderMessage: "url을 공백이였습니다. 다시 입력 해주세요")
+            return self.presentAlert(title: "URL 입력", message: "", placeHolderMessage: "url을 공백이있거나 올바른 주소형태가 아닙니다. 다시 입력 해주세요")
         }
         
         let dataTask = session.dataTask(with: url) { (data, response, error) in
@@ -593,6 +617,7 @@ class NoteViewController: UIViewController {
     // MARK: - New Note
     private func newNote() {
         self.saveNote()
+        self.presentSympleAlert(title: "저장 완료", message: "방금 작성한 문서를 저장했습니다.")
         self.clearNote()
         db.insertNote(id: -1, title: note.title, content: note.content, lastDate: currentDate(), importance: note.importance, background: note.background, text_size: note.textSize, text_color: note.textColor)
         self.note.id = db.readLast().id
@@ -722,7 +747,7 @@ extension NoteViewController: UICollectionViewDataSource, UICollectionViewDelega
                 break
             }
             
-            if selectedPhotos.count == selectedIndexPath.row {
+            if selectedPhotos.count == selectedIndexPath.row { // 마지막 행으로 접근하는 것 방지
                 cvPhoto.cancelInteractiveMovement()
             } else {
                 cvPhoto.endInteractiveMovement()
@@ -803,9 +828,9 @@ extension NoteViewController: UITextViewDelegate {
         if txtContents.text == "" {
             txtContents.text = "내용 입력"
             txtContents.textColor = UIColor.lightGray
-        } else if txtContents.text == "내용 입력"{
+        } else if txtContents.text == "내용 입력" || note.content == "내용 없음"{
             txtContents.text = ""
-            txtContents.textColor = UIColor.white
+            txtContents.textColor = colorList[currentTextColorIndex]
         }
     }
 }
