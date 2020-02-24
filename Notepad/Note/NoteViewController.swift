@@ -114,7 +114,10 @@ class NoteViewController: UIViewController {
     }
     
     override func viewWillDisappear(_ animated: Bool) {
-      unregisterForKeyboardNotifications()
+        if (self.txtTitle.text == "" && self.txtContents.text == "") || (self.txtTitle.text == "" && self.txtContents.text == "내용 입력"){ // 제목과 내용이 적혀있지 않으면 db에서 삭제
+            db.deleteByID(id: note.id)
+        }
+        unregisterForKeyboardNotifications()
     }
     
     // 초기 설정
@@ -323,7 +326,6 @@ class NoteViewController: UIViewController {
         myAlert.addAction(okAction)
         self.present(myAlert, animated:true, completion:nil)
     }
-    
     
     // Edit 버튼에 대한 각각의 Action
     @IBAction func touchPageMenuButton(_ sender: UIButton) {
