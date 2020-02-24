@@ -9,7 +9,7 @@
 import UIKit
 
 var notes:[NoteModel] = []
-var images:[ImageModel] = []
+
 class NoteListableViewController: UITableViewController {
         
     override func viewDidLoad() {
@@ -26,10 +26,7 @@ class NoteListableViewController: UITableViewController {
     }
     
     private func setup(){
-//        db.insertNote(id: 0, title: "A 제목", content: "A 내용", lastDate: "2020/02/01", importance: .white, background: .black)
-//        db.insertNote(id: 1, title: "B 제목", content: "B 내용", lastDate: "2020/02/03", importance: .red)
-//        db.insertNote(id: 2, title: "C 제목", content: "C 내용", lastDate: "2020/02/22", importance: .blue)
-//        self.setupNavigation()
+        self.setupNavigation()
     }
     
     func setupNavigation() {
