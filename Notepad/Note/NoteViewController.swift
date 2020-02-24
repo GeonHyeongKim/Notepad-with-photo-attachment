@@ -76,6 +76,8 @@ class NoteViewController: UIViewController {
     @IBOutlet var photoEditView: UIView!
     var selectedPhotos: [UIImage]!
     var selectedPhotoIndex = Int(-1)
+    fileprivate var longPressGesture: UILongPressGestureRecognizer!
+
     
     // TextColor
     @IBOutlet weak var selectTextColorView: UIView!
@@ -107,7 +109,7 @@ class NoteViewController: UIViewController {
         
         self.cvPhoto.reloadData()
         reload(status: .camera)
-        self.attachImage(photo: selectedPhotos)
+//        self.attachImage(photo: selectedPhotos)
     }
     
     override func viewWillDisappear(_ animated: Bool) {
@@ -118,7 +120,8 @@ class NoteViewController: UIViewController {
     private func setup(){
         self.setupNavigation()
         self.setupNote()
-        self.notification()
+        self.setupNotification()
+        self.setupGestureRecognizer()
     }
     
     // Navigation 설정
@@ -171,8 +174,14 @@ class NoteViewController: UIViewController {
         }
     }
     
-    func notification() {
+    // Nototification 등록
+    func setupNotification() {
         registerForKeyboardNotifications()
+    }
+    
+    func setupGestureRecognizer() {
+        longPressGesture = UILongPressGestureRecognizer(target: self, action: #selector(self.handleLongGesture(gesture:)))
+        cvPhoto.addGestureRecognizer(longPressGesture)
     }
         
     private func reload(status: NoteEditViewModel.Status) {
@@ -432,7 +441,7 @@ class NoteViewController: UIViewController {
         present(imgaePicker, animated: true)
     }
     
-    // 외부 이미지 fetch
+    // 외부 이미지 open
     func openURLImage(url: String) {
         fetchImage(from: url) { (imageData) in
             if let data = imageData {
@@ -477,42 +486,42 @@ class NoteViewController: UIViewController {
     }
     
     
-    // 이미지 첨부
-    func attachImage(photo: [UIImage]) {
-        
-        // start with our text data
-        let font = UIFont.systemFont(ofSize: 26)
-        let attributes: [NSAttributedString.Key: Any] = [
-            .font: font,
-            .foregroundColor: UIColor.orange
-            ]
-        let attributedString = NSMutableAttributedString(string: "before after", attributes: attributes)
-        let textAttachment = NSTextAttachment()
-        textAttachment.image = photo.first
-        
-        let imageSize = textAttachment.image!.size.width;
-        var frameSize = self.view.frame.size.width - 100;
-        let topBarHeight = UIApplication.shared.statusBarFrame.size.height +
-            (self.navigationController?.navigationBar.frame.height ?? 0.0)
-        let height = self.view.frame.size.height - topBarHeight - 100;
-        if(height < frameSize) {
-            frameSize = height;
-        }
-        let scaleFactor = imageSize / frameSize;
-        
-        // scale the image down
-        textAttachment.image = UIImage(cgImage: textAttachment.image!.cgImage!, scale: scaleFactor, orientation: .up)
-        
-        // 이미지에서 속성 문자열을 생성하여 추가
-        let attrStringWithImage = NSAttributedString(attachment: textAttachment)
-        attributedString.append(attrStringWithImage)
-        attributedString.append(attrStringWithImage)
-        attributedString.append(NSAttributedString(string: "\nTHE END!!!", attributes: attributes))
-//        attributedString.replaceCharacters(in: NSMakeRange(4, 1), with: attrStringWithImage)
-        
-        txtContents.attributedText = attributedString;
-        
-    }
+//    // 이미지 첨부
+//    func attachImage(photo: [UIImage]) {
+//
+//        // start with our text data
+//        let font = UIFont.systemFont(ofSize: 26)
+//        let attributes: [NSAttributedString.Key: Any] = [
+//            .font: font,
+//            .foregroundColor: UIColor.orange
+//            ]
+//        let attributedString = NSMutableAttributedString(string: "before after", attributes: attributes)
+//        let textAttachment = NSTextAttachment()
+//        textAttachment.image = photo.first
+//
+//        let imageSize = textAttachment.image!.size.width;
+//        var frameSize = self.view.frame.size.width - 100;
+//        let topBarHeight = UIApplication.shared.statusBarFrame.size.height +
+//            (self.navigationController?.navigationBar.frame.height ?? 0.0)
+//        let height = self.view.frame.size.height - topBarHeight - 100;
+//        if(height < frameSize) {
+//            frameSize = height;
+//        }
+//        let scaleFactor = imageSize / frameSize;
+//
+//        // scale the image down
+//        textAttachment.image = UIImage(cgImage: textAttachment.image!.cgImage!, scale: scaleFactor, orientation: .up)
+//
+//        // 이미지에서 속성 문자열을 생성하여 추가
+//        let attrStringWithImage = NSAttributedString(attachment: textAttachment)
+//        attributedString.append(attrStringWithImage)
+//        attributedString.append(attrStringWithImage)
+//        attributedString.append(NSAttributedString(string: "\nTHE END!!!", attributes: attributes))
+////        attributedString.replaceCharacters(in: NSMakeRange(4, 1), with: attrStringWithImage)
+//
+//        txtContents.attributedText = attributedString;
+//
+//    }
     
     // photo library 권한 확인
     private func checkPhotoLibraryAuthorizationStatus(){
@@ -680,8 +689,35 @@ extension NoteViewController: UICollectionViewDataSource, UICollectionViewDelega
             openPhotoLibrary()
         }
         self.cvPhoto.reloadData()
-
     }
+    
+    // UICollectionView에서 항목 이동을 사용 가능 하게하기. true를 전달하면이 기능이 활성화
+    func collectionView(_ collectionView: UICollectionView, canMoveItemAt indexPath: IndexPath) -> Bool {
+        return true
+    }
+    
+    // 두 항목의 시작 색인과 끝 색인을 catch
+    func collectionView(_ collectionView: UICollectionView, moveItemAt sourceIndexPath: IndexPath, to destinationIndexPath: IndexPath) {
+        let item = selectedPhotos.remove(at: sourceIndexPath.item)
+        selectedPhotos.insert(item, at: destinationIndexPath.item)
+    }
+    
+    @objc func handleLongGesture(gesture: UILongPressGestureRecognizer) {
+           switch(gesture.state) {
+
+           case .began:
+               guard let selectedIndexPath = cvPhoto.indexPathForItem(at: gesture.location(in: cvPhoto)) else {
+                   break
+               }
+               cvPhoto.beginInteractiveMovementForItem(at: selectedIndexPath)
+           case .changed:
+               cvPhoto.updateInteractiveMovementTargetPosition(gesture.location(in: gesture.view!))
+           case .ended:
+               cvPhoto.endInteractiveMovement()
+           default:
+               cvPhoto.cancelInteractiveMovement()
+           }
+       }
 }
 
 // MARK: - NoteViewControllerDelegate
@@ -701,7 +737,6 @@ extension NoteViewController: UIImagePickerControllerDelegate, UINavigationContr
         
         self.selectedPhotos.append(image)
 
-        
     }
 }
 // MARK: - NoteViewControllerDelegate
