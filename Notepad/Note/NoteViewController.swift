@@ -103,7 +103,7 @@ class NoteViewController: UIViewController {
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(true)
         reload(status: .normal)
-        guard let selectedPhotos = selectedPhotos else {
+        guard selectedPhotos != nil else {
             return
         }
         
@@ -693,31 +693,44 @@ extension NoteViewController: UICollectionViewDataSource, UICollectionViewDelega
     
     // UICollectionView에서 항목 이동을 사용 가능 하게하기. true를 전달하면이 기능이 활성화
     func collectionView(_ collectionView: UICollectionView, canMoveItemAt indexPath: IndexPath) -> Bool {
+        if selectedPhotos.count == indexPath.row {
+            return false
+        }
         return true
     }
     
     // 두 항목의 시작 색인과 끝 색인을 catch
     func collectionView(_ collectionView: UICollectionView, moveItemAt sourceIndexPath: IndexPath, to destinationIndexPath: IndexPath) {
-        let item = selectedPhotos.remove(at: sourceIndexPath.item)
-        selectedPhotos.insert(item, at: destinationIndexPath.item)
+        if selectedPhotos.count != destinationIndexPath.item {
+            let item = selectedPhotos.remove(at: sourceIndexPath.item)
+            selectedPhotos.insert(item, at: destinationIndexPath.item)
+        }
     }
     
     @objc func handleLongGesture(gesture: UILongPressGestureRecognizer) {
-           switch(gesture.state) {
-
-           case .began:
-               guard let selectedIndexPath = cvPhoto.indexPathForItem(at: gesture.location(in: cvPhoto)) else {
-                   break
-               }
-               cvPhoto.beginInteractiveMovementForItem(at: selectedIndexPath)
-           case .changed:
-               cvPhoto.updateInteractiveMovementTargetPosition(gesture.location(in: gesture.view!))
-           case .ended:
-               cvPhoto.endInteractiveMovement()
-           default:
-               cvPhoto.cancelInteractiveMovement()
-           }
-       }
+        switch(gesture.state) {
+            
+        case .began:
+            guard let selectedIndexPath = cvPhoto.indexPathForItem(at: gesture.location(in: cvPhoto)) else {
+                break
+            }
+            cvPhoto.beginInteractiveMovementForItem(at: selectedIndexPath)
+        case .changed:
+            cvPhoto.updateInteractiveMovementTargetPosition(gesture.location(in: gesture.view!))
+        case .ended:
+            guard let selectedIndexPath = cvPhoto.indexPathForItem(at: gesture.location(in: cvPhoto)) else {
+                break
+            }
+            
+            if selectedPhotos.count == selectedIndexPath.row {
+                cvPhoto.cancelInteractiveMovement()
+            } else {
+                cvPhoto.endInteractiveMovement()
+            }
+        default:
+            cvPhoto.cancelInteractiveMovement()
+        }
+    }
 }
 
 // MARK: - NoteViewControllerDelegate
