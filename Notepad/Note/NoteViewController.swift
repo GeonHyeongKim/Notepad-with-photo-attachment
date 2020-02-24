@@ -511,44 +511,6 @@ class NoteViewController: UIViewController {
         dataTask.resume()
     }
     
-    
-//    // 이미지 첨부
-//    func attachImage(photo: [UIImage]) {
-//
-//        // start with our text data
-//        let font = UIFont.systemFont(ofSize: 26)
-//        let attributes: [NSAttributedString.Key: Any] = [
-//            .font: font,
-//            .foregroundColor: UIColor.orange
-//            ]
-//        let attributedString = NSMutableAttributedString(string: "before after", attributes: attributes)
-//        let textAttachment = NSTextAttachment()
-//        textAttachment.image = photo.first
-//
-//        let imageSize = textAttachment.image!.size.width;
-//        var frameSize = self.view.frame.size.width - 100;
-//        let topBarHeight = UIApplication.shared.statusBarFrame.size.height +
-//            (self.navigationController?.navigationBar.frame.height ?? 0.0)
-//        let height = self.view.frame.size.height - topBarHeight - 100;
-//        if(height < frameSize) {
-//            frameSize = height;
-//        }
-//        let scaleFactor = imageSize / frameSize;
-//
-//        // scale the image down
-//        textAttachment.image = UIImage(cgImage: textAttachment.image!.cgImage!, scale: scaleFactor, orientation: .up)
-//
-//        // 이미지에서 속성 문자열을 생성하여 추가
-//        let attrStringWithImage = NSAttributedString(attachment: textAttachment)
-//        attributedString.append(attrStringWithImage)
-//        attributedString.append(attrStringWithImage)
-//        attributedString.append(NSAttributedString(string: "\nTHE END!!!", attributes: attributes))
-////        attributedString.replaceCharacters(in: NSMakeRange(4, 1), with: attrStringWithImage)
-//
-//        txtContents.attributedText = attributedString;
-//
-//    }
-    
     // photo library 권한 확인
     private func checkPhotoLibraryAuthorizationStatus(){
         PHPhotoLibrary.requestAuthorization { (status) in
