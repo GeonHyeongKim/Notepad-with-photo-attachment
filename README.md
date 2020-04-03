@@ -46,8 +46,8 @@ You can faithfully implement the basic functionality of a typical Notepad app, a
     * 편집 시에는 기존에 첨부된 이미지가 나타나며, 이미지를 더 추가하거나 기존 이미지를 삭제할 수 있습니다.
 
 ## FeedBack
-![feedback1](https://user-images.githubusercontent.com/48436020/78359349-e3efd280-75ef-11ea-8ae3-f1db7132eb03.png)
 ![feedback2](https://user-images.githubusercontent.com/48436020/78359353-e5b99600-75ef-11ea-8b08-14a826f1116e.png)
+![feedback1](https://user-images.githubusercontent.com/48436020/78359349-e3efd280-75ef-11ea-8ae3-f1db7132eb03.png)
 * 추후 이점을 반영하여 'Notepad-with-photo-attachment_Ver2'를 **4월 중순**에 설계하고 구현할 계획입니다.
 
 ## Point
